@@ -5,7 +5,7 @@ let lastSMMOrderId = null;
 
 // Tab switcher
 function switchTab(tab) {
-  const tabs = ['orders', 'personas', 'smm', 'realfb', 'pagefarm'];
+  const tabs = ['orders', 'personas', 'smm', 'realfb', 'pagefarm', 'viewbooster'];
   tabs.forEach(t => {
     const btn = document.getElementById(`tab-${t}`);
     const sec = document.getElementById(`section-${t}`);
@@ -25,6 +25,8 @@ function switchTab(tab) {
     loadFBAccountsList();
   } else if (tab === 'pagefarm') {
     loadPagesList();
+  } else if (tab === 'viewbooster') {
+    loadViewBoosterStats();
   }
 }
 
@@ -797,5 +799,151 @@ async function handleSwarmLike(e) {
     btn.innerHTML = `<i class="fa-solid fa-play"></i> Launch Swarm Likes Order`;
   }
 }
+
+// -------------------------------------------------------------
+// ORGANIC VIEW & VIRAL REACH BOOSTER (Playwright Powered)
+// -------------------------------------------------------------
+let activeViewBoostTimer = null;
+let totalBoostedViewsCount = 0;
+
+async function loadViewBoosterStats() {
+  try {
+    const res = await fetch("/api/v1/orders?limit=50");
+    if (!res.ok) return;
+    const data = await res.json();
+    const orders = data.items || [];
+    
+    // Sum views delivered
+    let totalViews = 0;
+    orders.forEach(o => {
+      if (o.service && (o.service.service_type === "view" || o.service_id === 3)) {
+        totalViews += (o.delivered_count || 0);
+      }
+    });
+
+    const kpiDelivered = document.getElementById("kpi-view-delivered");
+    if (kpiDelivered) kpiDelivered.innerText = totalViews;
+    totalBoostedViewsCount = totalViews;
+  } catch (err) {
+    console.error("Failed to load view booster stats", err);
+  }
+}
+
+async function handleLaunchViewBoost(e) {
+  e.preventDefault();
+  const btn = document.getElementById("btn-launch-views");
+  const postUrl = document.getElementById("view-target-url").value.trim();
+  const quantity = parseInt(document.getElementById("view-quantity").value);
+  const dwellSeconds = parseFloat(document.getElementById("view-dwell-time").value);
+
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Initializing View Workers...`;
+
+  const progressBox = document.getElementById("view-progress-box");
+  const heading = document.getElementById("view-progress-heading");
+  const badge = document.getElementById("view-status-badge");
+  const bar = document.getElementById("view-progress-bar");
+  const logsTable = document.getElementById("view-logs-table");
+
+  progressBox.classList.remove("hidden");
+  heading.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-cyan-400"></i> Running Organic Views & Reach Booster...`;
+  badge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono";
+  badge.innerText = `0 / ${quantity} Delivered (0%)`;
+  bar.style.width = "0%";
+  logsTable.innerHTML = `<div class="text-slate-400 text-center py-4"><i class="fa-solid fa-network-wired fa-spin mr-1.5"></i> Spawning parallel Playwright browser sessions...</div>`;
+
+  try {
+    const res = await fetch("/api/v1/view-booster/launch", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        post_url: postUrl,
+        quantity: quantity,
+        dwell_seconds: dwellSeconds,
+        concurrency: 3
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Failed to launch view campaign");
+
+    showToast(`Launched campaign for ${quantity} high-retention views!`);
+    pollViewBoostProgress(data.task_id, quantity);
+  } catch (err) {
+    badge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono";
+    badge.innerText = "Failed";
+    heading.innerText = "View booster encountered an error";
+    logsTable.innerHTML = `<div class="text-rose-400 p-2">${err.message}</div>`;
+    showToast(err.message, true);
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-play"></i> Launch Real View & Reach Campaign`;
+  }
+}
+
+function pollViewBoostProgress(taskId, totalRequested) {
+  if (activeViewBoostTimer) clearInterval(activeViewBoostTimer);
+
+  const btn = document.getElementById("btn-launch-views");
+  const heading = document.getElementById("view-progress-heading");
+  const badge = document.getElementById("view-status-badge");
+  const bar = document.getElementById("view-progress-bar");
+  const logsTable = document.getElementById("view-logs-table");
+
+  activeViewBoostTimer = setInterval(async () => {
+    try {
+      const res = await fetch(`/api/v1/view-booster/status/${taskId}`);
+      if (!res.ok) return;
+      const data = await res.json();
+
+      const delivered = data.delivered || 0;
+      const percent = Math.min(100, Math.round((delivered / totalRequested) * 100));
+
+      bar.style.width = `${percent}%`;
+      badge.innerText = `${delivered} / ${totalRequested} Delivered (${percent}%)`;
+
+      // Render logs
+      if (data.logs && data.logs.length > 0) {
+        logsTable.innerHTML = data.logs.slice().reverse().map(log => `
+          <div class="p-2.5 rounded-lg bg-surface-950 border border-slate-800 flex items-center justify-between hover:border-slate-700 transition">
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-[10px]">#${log.view_idx}</span>
+              <div>
+                <div class="font-bold text-white text-xs flex items-center gap-1.5">
+                  <i class="fa-solid fa-mobile-screen-button text-slate-400 text-[10px]"></i>
+                  <span>${log.device}</span>
+                  <span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 font-mono">${log.viewport}</span>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-0.5">
+                  Referrer: <strong class="text-pink-400">${log.referrer || 'Direct'}</strong> • Dwell: <strong class="text-emerald-400">${log.dwell_seconds}s</strong>
+                </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${log.status === 'SUCCESS' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">
+                ${log.status === 'SUCCESS' ? 'Impression OK' : 'Failed'}
+              </span>
+              <div class="text-[9px] text-slate-500 mt-0.5">${log.timestamp}</div>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      if (data.status === "COMPLETED") {
+        clearInterval(activeViewBoostTimer);
+        activeViewBoostTimer = null;
+        badge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono";
+        heading.innerHTML = `<i class="fa-solid fa-check-circle text-emerald-400"></i> Organic Reach Campaign Completed! Delivered ${delivered} Views`;
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-play"></i> Launch Real View & Reach Campaign`;
+        showToast(`Campaign Completed! ${delivered} organic views & impressions delivered.`);
+        await loadViewBoosterStats();
+        await refreshOrders();
+      }
+    } catch (err) {
+      console.error("View booster poll error", err);
+    }
+  }, 1500);
+}
+
 
 

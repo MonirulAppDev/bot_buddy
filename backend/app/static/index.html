@@ -76,6 +76,9 @@
       <button onclick="switchTab('pagefarm')" id="tab-pagefarm" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
         <i class="fa-solid fa-flag text-pink-400"></i> Page Farm (<span id="nav-pages-count">15</span>)
       </button>
+      <button onclick="switchTab('viewbooster')" id="tab-viewbooster" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
+        <i class="fa-solid fa-eye text-cyan-400"></i> View & Reach Booster
+      </button>
     </div>
 
     <!-- Links & TiDB Cloud Indicator -->
@@ -549,6 +552,136 @@
         <div id="pages-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <!-- Populated via JS -->
         </div>
+      </section>
+
+    </div>
+
+    <!-- TAB 6: ORGANIC VIEWS & VIRAL REACH BOOSTER -->
+    <div id="section-viewbooster" class="hidden space-y-6">
+
+      <!-- Header Banner -->
+      <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-4 border-b border-slate-800 mb-6">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-eye text-cyan-400"></i> Facebook Organic Views & Viral Reach Booster
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Playwright Browser Cluster diye <strong>High Dwell Retention (8s-25s)</strong>, <strong>Multi-Device Emulation</strong> (iPhone, Samsung, Mac, Windows) ebong <strong>Organic Referrers</strong> (Google, FB Feed, Twitter) simulate kore Meta EdgeRank Algorithm-ke trigger kore jaate post-er Reach hajar hajar real user-der kache pouchay!
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              0 Login / 0 Account Needed
+            </span>
+          </div>
+        </div>
+
+        <!-- KPI Metric Cards for View Booster -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
+            <div class="text-xs text-slate-400 font-semibold uppercase">Total Views Boosted</div>
+            <div class="text-2xl font-bold text-cyan-400 mt-1" id="kpi-view-delivered">0</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Verified impressions delivered</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
+            <div class="text-xs text-slate-400 font-semibold uppercase">Algorithm Retention</div>
+            <div class="text-2xl font-bold text-emerald-400 mt-1" id="kpi-view-dwell">12.5s Avg</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">High Dwell Time (Anti-Bounce)</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
+            <div class="text-xs text-slate-400 font-semibold uppercase">Device Emulation</div>
+            <div class="text-2xl font-bold text-indigo-400 mt-1">6 Profiles</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">iPhone, Galaxy, Pixel, Mac, PC</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
+            <div class="text-xs text-slate-400 font-semibold uppercase">Organic Traffic Origin</div>
+            <div class="text-2xl font-bold text-pink-400 mt-1">Multi-Referrer</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Google, FB App, Twitter/X</div>
+          </div>
+        </div>
+
+        <!-- Launch View & Reach Campaign Form -->
+        <div class="p-5 rounded-2xl bg-surface-950/70 border border-slate-800 space-y-4">
+          <h3 class="font-bold text-sm text-white flex items-center gap-2">
+            <i class="fa-solid fa-rocket text-cyan-400"></i> Launch New Organic View & Reach Campaign
+          </h3>
+
+          <form id="view-boost-form" onsubmit="handleLaunchViewBoost(event)" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              
+              <!-- Target URL -->
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Target Facebook Post / Video / Reel URL</label>
+                <input type="url" id="view-target-url" value="https://www.facebook.com/photo?fbid=122103658497500888&set=a.122095228263500888" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono" required>
+              </div>
+
+              <!-- Quantity -->
+              <div>
+                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Number of Views</label>
+                <input type="number" id="view-quantity" value="15" min="2" max="200" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-bold" required>
+              </div>
+
+              <!-- Dwell Retention Mode -->
+              <div>
+                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Dwell Retention (Reach Multiplier)</label>
+                <select id="view-dwell-time" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
+                  <option value="6">Fast Boost (6 seconds dwell)</option>
+                  <option value="12" selected>Organic Reach Mode (12s dwell - Recommended)</option>
+                  <option value="20">Deep Viral Retention (20s dwell - Best for Explore Feed)</option>
+                </select>
+              </div>
+
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <div class="text-xs text-slate-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+                <span>Simulates real reading, viewport scrolling, video stream triggering, and diverse mobile headers</span>
+              </div>
+
+              <button type="submit" id="btn-launch-views" class="bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-medium px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2 shadow-lg shadow-cyan-600/30">
+                <i class="fa-solid fa-play"></i> Launch Real View & Reach Campaign
+              </button>
+            </div>
+          </form>
+
+          <!-- Live Progress Terminal -->
+          <div id="view-progress-box" class="hidden mt-4 p-5 rounded-xl bg-surface-900 border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="font-bold text-sm text-white flex items-center gap-2" id="view-progress-heading">
+                  <i class="fa-solid fa-spinner fa-spin text-cyan-400"></i> Boosting Views & Organic Reach...
+                </h4>
+                <p class="text-xs text-slate-400 mt-0.5" id="view-progress-sub">Running parallel Playwright headless browser engines</p>
+              </div>
+              <span id="view-status-badge" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono">0 / 0 Delivered</span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-surface-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
+              <div id="view-progress-bar" class="bg-gradient-to-r from-cyan-500 to-indigo-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+
+            <!-- Live Logs Table -->
+            <div class="mt-3">
+              <div class="text-xs font-semibold text-slate-400 mb-2 flex items-center justify-between">
+                <span>Live View Impressions Stream</span>
+                <span class="text-[10px] text-slate-500 font-mono">TiDB Cloud Synced</span>
+              </div>
+              <div id="view-logs-table" class="space-y-1.5 max-h-64 overflow-y-auto text-xs font-mono">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+
       </section>
 
     </div>

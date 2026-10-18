@@ -12,6 +12,7 @@ from app.api.v1.fb_pages import router as fb_pages_router
 from app.api.v1.orders import router as orders_router
 from app.api.v1.personas import router as personas_router
 from app.api.v1.services import router as services_router
+from app.api.v1.view_booster import router as view_booster_router
 from app.config import settings
 from app.database import init_db
 
@@ -51,6 +52,7 @@ app.include_router(personas_router, prefix=settings.API_V1_STR)
 app.include_router(orders_router, prefix=settings.API_V1_STR)
 app.include_router(fb_accounts_router, prefix=settings.API_V1_STR)
 app.include_router(fb_pages_router, prefix=settings.API_V1_STR)
+app.include_router(view_booster_router, prefix=settings.API_V1_STR)
 app.include_router(smm_v2_router)
 
 
