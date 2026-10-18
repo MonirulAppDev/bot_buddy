@@ -56,7 +56,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 async def init_db() -> None:
     # Import all models so metadata registers all tables
-    from app.models import fb_account, order, persona, service, task_log, user  # noqa: F401
+    from app.models import fb_account, fb_page, order, persona, service, task_log, user  # noqa: F401
     
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

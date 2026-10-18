@@ -73,6 +73,9 @@
       <button onclick="switchTab('realfb')" id="tab-realfb" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
         <i class="fa-brands fa-facebook text-blue-400"></i> Real FB Bot
       </button>
+      <button onclick="switchTab('pagefarm')" id="tab-pagefarm" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
+        <i class="fa-solid fa-flag text-pink-400"></i> Page Farm (<span id="nav-pages-count">15</span>)
+      </button>
     </div>
 
     <!-- Links & TiDB Cloud Indicator -->
@@ -448,6 +451,106 @@
 
         </div>
       </section>
+    </div>
+
+    <!-- TAB 5: PAGE FARM & BOT SWARM -->
+    <div id="section-pagefarm" class="hidden space-y-6">
+      
+      <!-- Top Overview Header -->
+      <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-4 border-b border-slate-800 mb-6">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-flag text-pink-500"></i> Facebook Page Farm & Bot Swarm Engine
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Akta single Facebook account-er under-e <strong>20 theke 50 ti Pages</strong> toiri kore hajar hajar alada alada Page identity theke Like & Comments deliver kora jay (0 phone verification required)!
+            </p>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button onclick="handleSpawnPages(5)" id="btn-spawn-pages" class="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-medium px-4 py-2 rounded-xl text-xs transition flex items-center gap-2 shadow-lg shadow-pink-600/20 whitespace-nowrap">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> + Spawn 5 New Pages
+            </button>
+            <button onclick="loadPagesList()" class="bg-surface-800 hover:bg-slate-700 text-slate-300 font-medium px-3 py-2 rounded-xl text-xs border border-slate-700 transition">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Cards for Page Farm -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
+            <div class="text-xs text-slate-400 font-semibold uppercase">Parent Bot Accounts</div>
+            <div class="text-2xl font-bold text-indigo-400 mt-1">3 Active Bots</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Alpha, Beta, Gamma Bot Accounts</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
+            <div class="text-xs text-slate-400 font-semibold uppercase">Child Pages in Farm</div>
+            <div class="text-2xl font-bold text-pink-400 mt-1" id="kpi-farm-pages-count">15 Pages</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Separate Page Identities & Avatars</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
+            <div class="text-xs text-slate-400 font-semibold uppercase">Database Storage</div>
+            <div class="text-2xl font-bold text-cyan-400 mt-1">TiDB Cloud</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Serverless Distributed MySQL</div>
+          </div>
+        </div>
+
+        <!-- Page Swarm Like Launcher -->
+        <div class="p-5 rounded-2xl bg-surface-950/70 border border-slate-800 space-y-4">
+          <h3 class="font-bold text-sm text-white flex items-center gap-2">
+            <i class="fa-solid fa-bolt text-amber-400"></i> Launch Swarm Like Order (Deliver Likes via Separate Pages)
+          </h3>
+
+          <form id="swarm-like-form" onsubmit="handleSwarmLike(event)" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Target Facebook Post / Photo URL</label>
+                <input type="url" id="swarm-url" value="https://www.facebook.com/photo?fbid=122103658497500888&set=a.122095228263500888" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-pink-500 font-mono" required>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Quantity of Page Likes</label>
+                <input type="number" id="swarm-quantity" value="10" min="1" max="50" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-pink-500 font-bold" required>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-slate-400"><i class="fa-solid fa-shield-heart text-pink-400 mr-1"></i> Each like is delivered by a distinct page name with natural 0.5s pacing</span>
+              <button type="submit" id="btn-swarm-like" class="bg-gradient-to-r from-pink-600 to-indigo-600 hover:from-pink-500 hover:to-indigo-500 text-white font-medium px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2 shadow-lg shadow-pink-600/30">
+                <i class="fa-solid fa-play"></i> Launch Swarm Likes Order
+              </button>
+            </div>
+          </form>
+
+          <!-- Swarm Live Output -->
+          <div id="swarm-results" class="hidden mt-4 p-4 rounded-xl bg-surface-900 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs font-semibold text-white pb-2 border-b border-slate-800">
+              <span id="swarm-result-heading">Delivering likes across Page Farm...</span>
+              <span id="swarm-status-badge" class="px-2 py-0.5 rounded text-[10px] bg-pink-500/10 text-pink-400 border border-pink-500/20 font-bold">In Progress</span>
+            </div>
+            <div id="swarm-logs-list" class="space-y-1.5 max-h-56 overflow-y-auto text-xs font-mono"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Sub-Pages Grid -->
+      <section>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-bold text-white text-base flex items-center gap-2">
+            <i class="fa-solid fa-network-wired text-indigo-400"></i> Active Child Pages in Swarm
+          </h3>
+          <span class="text-xs text-slate-400">Stored on TiDB Cloud Serverless</span>
+        </div>
+        <div id="pages-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+
     </div>
 
   </main>

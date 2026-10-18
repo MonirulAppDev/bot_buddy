@@ -5,10 +5,11 @@ let lastSMMOrderId = null;
 
 // Tab switcher
 function switchTab(tab) {
-  const tabs = ['orders', 'personas', 'smm', 'realfb'];
+  const tabs = ['orders', 'personas', 'smm', 'realfb', 'pagefarm'];
   tabs.forEach(t => {
     const btn = document.getElementById(`tab-${t}`);
     const sec = document.getElementById(`section-${t}`);
+    if (!btn || !sec) return;
     if (t === tab) {
       btn.className = "px-4 py-1.5 rounded-lg font-medium transition-all bg-indigo-600 text-white shadow-sm flex items-center gap-2";
       sec.classList.remove('hidden');
@@ -22,6 +23,8 @@ function switchTab(tab) {
     loadPersonas();
   } else if (tab === 'realfb') {
     loadFBAccountsList();
+  } else if (tab === 'pagefarm') {
+    loadPagesList();
   }
 }
 
@@ -43,6 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await refreshOrders();
   await loadPersonasCount();
   await loadUserBalance();
+  await loadPagesCount();
   
   // Start continuous polling for orders
   startPolling();
@@ -629,4 +633,169 @@ async function handleBatchLike(e) {
     btn.innerHTML = `<i class="fa-solid fa-play"></i> Send Likes From Fake Accounts`;
   }
 }
+
+// -------------------------------------------------------------
+// PAGE FARM & SWARM FUNCTIONS (TiDB Cloud Backed)
+// -------------------------------------------------------------
+
+// Load count of pages for badges and KPIs
+async function loadPagesCount() {
+  try {
+    const res = await fetch("/api/v1/fb-pages?limit=1");
+    if (!res.ok) return;
+    const data = await res.json();
+    const count = data.total || 0;
+
+    const navBadge = document.getElementById("nav-pages-count");
+    const kpiCount = document.getElementById("kpi-farm-pages-count");
+    if (navBadge) navBadge.innerText = count;
+    if (kpiCount) kpiCount.innerText = `${count} Pages`;
+  } catch (err) {
+    console.error("Failed to load pages count", err);
+  }
+}
+
+// Load and render child pages in Page Farm grid
+async function loadPagesList() {
+  const grid = document.getElementById("pages-grid");
+  if (!grid) return;
+
+  grid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading Page Farm from TiDB Cloud...</div>`;
+
+  try {
+    const res = await fetch("/api/v1/fb-pages?limit=60");
+    const data = await res.json();
+    const pages = data.items || [];
+
+    const navBadge = document.getElementById("nav-pages-count");
+    const kpiCount = document.getElementById("kpi-farm-pages-count");
+    const total = data.total || pages.length;
+    if (navBadge) navBadge.innerText = total;
+    if (kpiCount) kpiCount.innerText = `${total} Pages`;
+
+    if (pages.length === 0) {
+      grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500">No pages in farm yet. Click "+ Spawn 5 New Pages" above to generate child identities!</div>`;
+      return;
+    }
+
+    grid.innerHTML = pages.map((page, idx) => `
+      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-4 hover:border-slate-700 transition flex items-start gap-3 relative group">
+        <img src="${page.avatar_url}" alt="${page.page_name}" class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex-shrink-0 object-cover shadow-sm">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-1">
+            <h4 class="font-bold text-white text-xs truncate" title="${page.page_name}">${page.page_name}</h4>
+            <span class="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+          </div>
+          <div class="text-[11px] text-pink-400 mt-0.5 flex items-center gap-1 font-medium">
+            <i class="fa-solid fa-tag text-[9px]"></i> ${page.category}
+          </div>
+          <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-800/80 text-[10px] text-slate-400 font-mono">
+            <span>Parent: <strong class="text-slate-300 font-sans">${page.parent_account}</strong></span>
+            <span class="text-amber-400 font-bold"><i class="fa-solid fa-thumbs-up mr-0.5"></i> ${page.total_likes_given}</span>
+          </div>
+        </div>
+      </div>
+    `).join("");
+  } catch (err) {
+    grid.innerHTML = `<div class="col-span-full text-rose-400 text-center py-4">Failed to load pages: ${err.message}</div>`;
+  }
+}
+
+// Spawn new child pages under parent account
+async function handleSpawnPages(count = 5) {
+  const btn = document.getElementById("btn-spawn-pages");
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Spawning ${count} Pages...`;
+  }
+
+  try {
+    const res = await fetch("/api/v1/fb-pages/spawn-pages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ count: count })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Failed to spawn pages");
+
+    showToast(data.message || `Successfully spawned ${count} pages!`);
+    await loadPagesList();
+    await loadPagesCount();
+  } catch (err) {
+    showToast(err.message, true);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> + Spawn 5 New Pages`;
+    }
+  }
+}
+
+// Launch Swarm Like Order across Page Farm
+async function handleSwarmLike(e) {
+  e.preventDefault();
+  const btn = document.getElementById("btn-swarm-like");
+  const postUrl = document.getElementById("swarm-url").value.trim();
+  const quantity = parseInt(document.getElementById("swarm-quantity").value);
+
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Swarm Delivering Likes...`;
+
+  const resultsDiv = document.getElementById("swarm-results");
+  const heading = document.getElementById("swarm-result-heading");
+  const badge = document.getElementById("swarm-status-badge");
+  const logsList = document.getElementById("swarm-logs-list");
+
+  resultsDiv.classList.remove("hidden");
+  badge.className = "px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold";
+  badge.innerText = "Swarming...";
+  heading.innerText = `Engaging ${quantity} Child Pages from Bot Farm...`;
+  logsList.innerHTML = `<div class="text-slate-400 text-center py-3"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Running Page Farm swarm...</div>`;
+
+  try {
+    const res = await fetch("/api/v1/fb-pages/swarm-like", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        post_url: postUrl,
+        quantity: quantity,
+        delay_seconds: 0.5
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Swarm like request failed");
+
+    badge.className = "px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold";
+    badge.innerText = `Delivered ${data.delivered} / ${data.total_requested}`;
+    heading.innerText = `Swarm Completed Successfully! Delivered ${data.delivered} Likes`;
+
+    logsList.innerHTML = data.logs.map(log => `
+      <div class="p-2 rounded bg-surface-950 border border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-5 h-5 rounded-full bg-pink-500/20 text-pink-400 flex items-center justify-center font-bold text-[10px]">${log.step}</span>
+          <span class="text-white font-semibold text-xs">${log.entity_name}</span>
+          <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">${log.category}</span>
+        </div>
+        <span class="text-emerald-400 font-semibold text-xs flex items-center gap-1">
+          <i class="fa-solid fa-check"></i> Liked
+        </span>
+      </div>
+    `).join("");
+
+    showToast(`Swarm completed! ${data.delivered} likes delivered across Page Farm.`);
+    await loadPagesList();
+    await loadPagesCount();
+  } catch (err) {
+    badge.className = "px-2 py-0.5 rounded text-[10px] bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold";
+    badge.innerText = "Failed";
+    heading.innerText = "Swarm delivery encountered an error";
+    logsList.innerHTML = `<div class="text-rose-400 p-2">${err.message}</div>`;
+    showToast(err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-play"></i> Launch Swarm Likes Order`;
+  }
+}
+
 
