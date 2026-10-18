@@ -1,0 +1,27 @@
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Database & local state
+*.db
+*.sqlite3
+.env
+
+# Node & Frontend (for future dashboard)
+node_modules/
+.next/
+dist/
+out/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
