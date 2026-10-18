@@ -8,6 +8,7 @@ from app.config import settings
 from app.database import get_db
 from app.models.order import Order
 from app.models.service import Service
+from app.models.user import User
 from app.services.simulation_engine import process_order_simulation
 
 router = APIRouter(prefix="/api/v2", tags=["SMM Standard API v2"])
@@ -19,8 +20,9 @@ async def smm_v2_endpoint(
     background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db)
 ):
-    """Industry-standard SMM API v2 endpoint compatible with all SMM panels and automation tools."""
-    # SMM panels usually post form data, but sometimes use query parameters or JSON
+    """Industry-standard SMM API v2 endpoint compatible with all SMM panels and automation tools.
+    Requires user API key authentication via 'key' parameter.
+    """
     data = {}
     if request.method == "POST":
         try:
@@ -31,13 +33,23 @@ async def smm_v2_endpoint(
                 data = await request.json()
             except Exception:
                 pass
-    
+
     if not data:
         data = dict(request.query_params)
 
     action = data.get("action")
     if not action:
         return {"error": "Incorrect request: 'action' parameter is required"}
+
+    api_key = data.get("key")
+    if not api_key:
+        return {"error": "Authentication failed: 'key' (API key) parameter is required"}
+
+    # Authenticate user by API key
+    res = await db.execute(select(User).where(User.api_key == api_key.strip()))
+    user = res.scalars().first()
+    if not user:
+        return {"error": "Invalid API key"}
 
     # 1. ACTION: services
     if action == "services":
@@ -62,7 +74,7 @@ async def smm_v2_endpoint(
     # 2. ACTION: balance
     elif action == "balance":
         return {
-            "balance": f"{settings.MOCK_BALANCE:.2f}",
+            "balance": f"{user.balance:.2f}",
             "currency": settings.MOCK_CURRENCY
         }
 
@@ -93,11 +105,22 @@ async def smm_v2_endpoint(
         if quantity < service.min_quantity or quantity > service.max_quantity:
             return {"error": f"Quantity must be between {service.min_quantity} and {service.max_quantity}"}
 
+        # Calculate charge and verify user balance
+        charge = round((service.rate_per_1000 / 1000.0) * quantity, 4)
+        if user.balance < charge:
+            return {"error": f"Not enough balance on your account. Order charge is ${charge:.2f}, balance is ${user.balance:.2f}"}
+
+        # Deduct wallet balance
+        user.balance -= charge
+        user.spent += charge
+
         order_id = str(uuid.uuid4())
         is_drip = runs > 1 or interval > 0
 
         order = Order(
             id=order_id,
+            user_id=user.id,
+            charge=charge,
             service_id=service_id,
             target_url=link,
             quantity=quantity,
@@ -113,7 +136,7 @@ async def smm_v2_endpoint(
         db.add(order)
         await db.commit()
 
-        # Run background simulation
+        # Run background simulation/worker
         background_tasks.add_task(process_order_simulation, order_id)
 
         return {"order": order_id}
@@ -124,14 +147,13 @@ async def smm_v2_endpoint(
         orders_str = data.get("orders")
 
         if orders_str:
-            # Multi-order status query
             ids = [o.strip() for o in orders_str.split(",") if o.strip()]
-            result = await db.execute(select(Order).where(Order.id.in_(ids)))
+            result = await db.execute(select(Order).where(Order.id.in_(ids), Order.user_id == user.id))
             orders_list = result.scalars().all()
             response_dict = {}
             for o in orders_list:
                 response_dict[o.id] = {
-                    "charge": "0.00",
+                    "charge": f"{o.charge:.2f}",
                     "start_count": "0",
                     "status": o.status,
                     "remains": str(o.remains_count),
@@ -147,7 +169,7 @@ async def smm_v2_endpoint(
             return {"error": "Incorrect order ID"}
 
         return {
-            "charge": "0.00",
+            "charge": f"{order.charge:.2f}",
             "start_count": "0",
             "status": order.status,
             "remains": str(order.remains_count),
