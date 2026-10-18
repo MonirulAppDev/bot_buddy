@@ -191,3 +191,24 @@ async def execute_batch_like_on_fb(payload: BatchLikeRequest, db: AsyncSession =
     await db.commit()
 
     return batch_res
+
+
+@router.post("/auto-create-bot")
+async def auto_create_fb_bot(headless: bool = False, db: AsyncSession = Depends(get_db)):
+    """Attempt automated Facebook registration bot using Playwright."""
+    from app.services.fb_account_creator import attempt_fb_registration
+
+    res = await attempt_fb_registration(headless=headless)
+    if res.get("success") and res.get("c_user"):
+        # Save newly created account into pool
+        acc = FBAccount(
+            account_name=res.get("account_name", "Auto-Created Bot"),
+            cookie_data=f"c_user={res['c_user']};",
+            fb_user_id=res["c_user"],
+            status="active"
+        )
+        db.add(acc)
+        await db.commit()
+
+    return res
+
