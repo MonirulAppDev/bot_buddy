@@ -1,19 +1,28 @@
 from collections.abc import AsyncGenerator
 import ssl
+import sys
+import certifi
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
 from app.config import settings
 
-# Prepare connection arguments for SQLite vs TiDB/MySQL
+# On Windows, set SelectorEventLoop to ensure async TLS connection to TiDB Cloud
+if sys.platform == "win32":
+    import asyncio
+    try:
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    except Exception:
+        pass
+
+# Prepare connection arguments for SQLite vs TiDB Cloud MySQL
 connect_args = {}
 if "sqlite" in settings.DATABASE_URL:
     connect_args = {"check_same_thread": False}
 elif "mysql" in settings.DATABASE_URL:
-    # TiDB Serverless requires TLS encryption
-    ctx = ssl.create_default_context()
+    ctx = ssl.create_default_context(cafile=certifi.where())
     ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
+    ctx.verify_mode = ssl.CERT_REQUIRED
     connect_args = {"ssl": ctx}
 
 engine = create_async_engine(
@@ -52,12 +61,14 @@ async def init_db() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    # Seed Default Admin / Demo User if table empty
+    # Seed Default Admin & Demo Services if empty
     from app.models.user import User
+    from app.models.service import Service
     from app.services.auth_service import hash_password
     from sqlalchemy import select
 
     async with AsyncSessionLocal() as session:
+        # 1. Seed Admin
         res = await session.execute(select(User).limit(1))
         existing_user = res.scalars().first()
         if not existing_user:
@@ -70,4 +81,12 @@ async def init_db() -> None:
                 role="admin"
             )
             session.add(admin_user)
+            await session.commit()
+
+        # 2. Seed Services if empty
+        srv_res = await session.execute(select(Service).limit(1))
+        if not srv_res.scalars().first():
+            from app.api.v1.services import DEFAULT_SERVICES
+            for s in DEFAULT_SERVICES:
+                session.add(Service(**s))
             await session.commit()

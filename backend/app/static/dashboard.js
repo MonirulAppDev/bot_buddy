@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadServices();
   await refreshOrders();
   await loadPersonasCount();
+  await loadUserBalance();
   
   // Start continuous polling for orders
   startPolling();
@@ -298,6 +299,41 @@ async function loadPersonasCount() {
   } catch (err) {}
 }
 
+async function loadUserBalance() {
+  try {
+    const res = await fetch("/api/v2?key=bb_live_master_api_key_778899&action=balance");
+    const data = await res.json();
+    if (data.balance) {
+      document.getElementById("nav-user-balance").innerText = `$${parseFloat(data.balance).toFixed(2)}`;
+    }
+  } catch (e) {}
+}
+
+async function quickAddFunds() {
+  try {
+    const res = await fetch("/api/v1/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: "admin", password: "admin123456" })
+    });
+    const authData = await res.json();
+    if (authData.access_token) {
+      await fetch("/api/v1/auth/add-funds", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authData.access_token}`
+        },
+        body: JSON.stringify({ amount: 50.0 })
+      });
+      showToast("Credited +$50.00 demo funds to wallet!");
+      await loadUserBalance();
+    }
+  } catch (err) {
+    showToast("Failed to add funds", true);
+  }
+}
+
 async function loadPersonas() {
   const grid = document.getElementById("personas-grid");
   grid.innerHTML = `<div class="col-span-4 text-center py-8 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-lg"></i> Loading accounts pool...</div>`;
@@ -374,31 +410,26 @@ async function testSMM(type) {
   try {
     let url = "/api/v2";
     let options = { method: "POST" };
+    const formData = new FormData();
+    formData.append("key", "bb_live_master_api_key_778899"); // Master admin API key
 
     if (type === "services") {
-      const formData = new FormData();
       formData.append("action", "services");
-      options.body = formData;
     } else if (type === "balance") {
-      const formData = new FormData();
       formData.append("action", "balance");
-      options.body = formData;
     } else if (type === "add_sample") {
       const firstService = servicesCache[0] ? servicesCache[0].id : 1;
-      const formData = new FormData();
       formData.append("action", "add");
       formData.append("service", firstService);
       formData.append("link", "https://facebook.com/example/post/987654");
       formData.append("quantity", 15);
-      options.body = formData;
     } else if (type === "status_sample") {
       const orderIdToTest = lastSMMOrderId || "sample-order-id";
-      const formData = new FormData();
       formData.append("action", "status");
       formData.append("order", orderIdToTest);
-      options.body = formData;
     }
 
+    options.body = formData;
     const res = await fetch(url, options);
     const data = await res.json();
     
@@ -408,6 +439,7 @@ async function testSMM(type) {
 
     output.innerText = JSON.stringify(data, null, 2);
     timeSpan.innerText = `${Date.now() - startTime} ms response`;
+    await loadUserBalance();
   } catch (err) {
     output.innerText = `Error: ${err.message}`;
   }

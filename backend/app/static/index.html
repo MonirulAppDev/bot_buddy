@@ -75,14 +75,22 @@
       </button>
     </div>
 
-    <!-- Links -->
+    <!-- Links & TiDB Cloud Indicator -->
     <div class="flex items-center space-x-3 text-sm">
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-800/80 border border-slate-700 text-xs">
+        <span class="text-slate-400">Wallet:</span>
+        <span class="font-bold text-emerald-400 font-mono" id="nav-user-balance">$100.00</span>
+        <button onclick="quickAddFunds()" class="text-[10px] bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 px-1.5 py-0.5 rounded font-bold transition" title="Add Demo Funds">+</button>
+      </div>
+
+      <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        <i class="fa-solid fa-cloud text-xs"></i> TiDB Cloud
+      </div>
+
       <a href="/docs" target="_blank" class="text-slate-400 hover:text-indigo-400 transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-surface-900">
         <i class="fa-solid fa-book"></i> Swagger Docs
       </a>
-      <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Engine Online
-      </div>
     </div>
   </nav>
 
