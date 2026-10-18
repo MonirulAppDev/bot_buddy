@@ -14,3 +14,4 @@ Bot Buddy is designed to simulate social media engagement metrics for testing, a
 - **Smart Comments** (Spintax, custom templates, and AI-powered contextual comments)
 - **Persona Engine** (Realistic avatars, names, locales, and human-like stochastic behavior)
 - **Standard SMM API v2 & Modern Dashboard**
+# bot_buddy
