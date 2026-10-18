@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bot Buddy</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 360px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 16px;
+      font-size: 13px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #1e293b;
+      margin-bottom: 14px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+    .title {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-online { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-offline { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .url-text {
+      font-family: monospace;
+      font-size: 11px;
+      color: #818cf8;
+      word-break: break-all;
+      background: #090d16;
+      padding: 6px 8px;
+      border-radius: 6px;
+      max-height: 48px;
+      overflow-y: auto;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 9px 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: #2563eb; color: white; }
+    .btn-primary:hover:not(:disabled) { background: #1d4ed8; }
+    
+    .btn-love { background: #e11d48; color: white; }
+    .btn-love:hover:not(:disabled) { background: #be123c; }
+
+    .btn-sync { background: #4f46e5; color: white; }
+    .btn-sync:hover:not(:disabled) { background: #4338ca; }
+
+    .btn-secondary { background: #334155; color: #e2e8f0; }
+    .btn-secondary:hover:not(:disabled) { background: #475569; }
+
+    .comment-select {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #475569;
+      color: #f8fafc;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 8px;
+      outline: none;
+    }
+
+    .status-msg {
+      font-size: 11px;
+      padding: 8px;
+      border-radius: 6px;
+      margin-top: 8px;
+      display: none;
+      font-weight: 500;
+    }
+    .status-success { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); display: block; }
+    .status-error { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); display: block; }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid #1e293b;
+    }
+    .footer a { color: #818cf8; text-decoration: none; font-weight: 500; }
+    .footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="brand">
+      <div class="logo">🤖</div>
+      <div class="title">Bot Buddy</div>
+    </div>
+    <div id="backend-status" class="badge badge-offline">Checking...</div>
+  </div>
+
+  <!-- Detected Post URL Card -->
+  <div class="card">
+    <div class="card-title">Active Facebook Post</div>
+    <div id="detected-url" class="url-text">Detecting active tab...</div>
+  </div>
+
+  <!-- 1-Click Direct Actions on Active Tab -->
+  <div class="card">
+    <div class="card-title">Direct Post Actions</div>
+    
+    <button id="btn-like" class="btn btn-primary">
+      👍 Like This Post (Direct)
+    </button>
+
+    <button id="btn-love" class="btn btn-love">
+      ❤️ Love React (Direct)
+    </button>
+
+    <div style="margin-top: 10px;">
+      <select id="comment-preset" class="comment-select">
+        <option value="Awesome content! Loved this 🔥">Preset 1: Awesome content! Loved this 🔥</option>
+        <option value="Great post! Very helpful and inspiring 👏">Preset 2: Great post! Very inspiring 👏</option>
+        <option value="Top quality! Keep up the good work ❤️">Preset 3: Top quality! Keep it up ❤️</option>
+      </select>
+      <button id="btn-comment" class="btn btn-secondary">
+        💬 Post Smart Comment
+      </button>
+    </div>
+  </div>
+
+  <!-- 1-Click Auto Cookie Sync Card -->
+  <div class="card" style="border-color: #4f46e5;">
+    <div class="card-title" style="color: #a5b4fc;">Backend Integration</div>
+    <p style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">
+      Sync this browser's Facebook login session to Bot Buddy backend with 1 click (no copying needed!).
+    </p>
+    <button id="btn-sync-cookies" class="btn btn-sync">
+      🔄 1-Click Sync Facebook to Backend
+    </button>
+  </div>
+
+  <!-- Status message box -->
+  <div id="status-box" class="status-msg"></div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>Bot Buddy v1.0</span>
+    <a href="http://127.0.0.1:8000/dashboard" target="_blank">Open Full Dashboard →</a>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
