@@ -104,7 +104,13 @@ async def execute_single_view(
             await page.goto(post_url, wait_until="domcontentloaded", timeout=40000)
 
             # Human-like initial reading pause
-            await asyncio.sleep(random.uniform(2.0, 3.5))
+            await asyncio.sleep(random.uniform(2.0, 3.0))
+
+            # Automatically dismiss any login modals / overlays
+            try:
+                await page.keyboard.press("Escape")
+            except Exception:
+                pass
 
             # Simulate video stream playback if on Reel / Video
             is_video = False
@@ -126,17 +132,30 @@ async def execute_single_view(
                 pass
 
             # Natural incremental reading actions during dwell time
-            elapsed = 3.5
+            elapsed = 3.0
             scroll_count = 0
             while elapsed < dwell_time:
-                step_sleep = min(random.uniform(2.5, 4.5), dwell_time - elapsed)
+                step_sleep = min(random.uniform(2.5, 4.0), dwell_time - elapsed)
                 await asyncio.sleep(step_sleep)
                 elapsed += step_sleep
+
+                # Keep video continuously unpaused if modal tried to stop it
+                if is_video:
+                    try:
+                        await page.evaluate("""() => {
+                            const v = document.querySelector('video');
+                            if (v && v.paused) {
+                                v.muted = true;
+                                v.play().catch(() => {});
+                            }
+                        }""")
+                    except Exception:
+                        pass
 
                 # Human-like micro scrolls and mouse moves
                 scroll_count += 1
                 if scroll_count % 2 == 1:
-                    await page.mouse.wheel(0, random.randint(120, 320))
+                    await page.mouse.wheel(0, random.randint(120, 300))
                 else:
                     await page.mouse.wheel(0, -random.randint(40, 100))
 
