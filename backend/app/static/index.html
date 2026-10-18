@@ -3,41 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bot Buddy - Dummy Social Engagement Dashboard</title>
-  <!-- Tailwind CSS CDN with dark mode support -->
+  <title>Bot Buddy — Facebook Organic View & Reel Reach Booster</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Inter & JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
           colors: {
-            brand: {
-              50: '#eef2ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-            },
             surface: {
               800: '#1e293b',
               900: '#0f172a',
-              950: '#020617'
+              950: '#020617',
             }
           }
         }
       }
     }
   </script>
-  <!-- Font Awesome / Lucide icons CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    @keyframes pulse-slow {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.85; transform: scale(1.02); }
-    }
-    .animate-pulse-slow {
-      animation: pulse-slow 3s infinite ease-in-out;
-    }
     /* Custom scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
@@ -48,54 +43,39 @@
 <body class="bg-surface-950 text-slate-100 min-h-screen font-sans antialiased flex flex-col">
 
   <!-- Navbar -->
-  <nav class="bg-surface-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-6 py-3.5 flex items-center justify-between">
+  <nav class="bg-surface-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-6 py-3.5 flex items-center justify-between">
     <div class="flex items-center space-x-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-        <i class="fa-solid fa-robot text-white text-lg"></i>
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+        <i class="fa-solid fa-eye text-white text-lg"></i>
       </div>
       <div>
-        <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">Bot Buddy</span>
-        <span class="text-xs ml-2 px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 font-medium border border-indigo-500/20">Simulation Engine v1.0</span>
+        <div class="flex items-center gap-2">
+          <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-cyan-300 bg-clip-text text-transparent">Bot Buddy</span>
+          <span class="text-[11px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 font-semibold border border-cyan-500/20">View & Reach Booster v2.0</span>
+        </div>
+        <p class="text-[11px] text-slate-400">Authentic Facebook & Reels Traffic Engine • Anti-Bot Evasion</p>
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="flex items-center space-x-2 bg-surface-800/80 p-1 rounded-xl border border-slate-700/60 text-sm">
-      <button onclick="switchTab('orders')" id="tab-orders" class="px-4 py-1.5 rounded-lg font-medium transition-all bg-indigo-600 text-white shadow-sm flex items-center gap-2">
-        <i class="fa-solid fa-bolt"></i> Simulations
-      </button>
-      <button onclick="switchTab('personas')" id="tab-personas" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
-        <i class="fa-solid fa-users"></i> Personas (<span id="nav-persona-count">0</span>)
-      </button>
-      <button onclick="switchTab('smm')" id="tab-smm" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
-        <i class="fa-solid fa-code"></i> SMM API v2
-      </button>
-      <button onclick="switchTab('realfb')" id="tab-realfb" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
-        <i class="fa-brands fa-facebook text-blue-400"></i> Real FB Bot
-      </button>
-      <button onclick="switchTab('pagefarm')" id="tab-pagefarm" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
-        <i class="fa-solid fa-flag text-pink-400"></i> Page Farm (<span id="nav-pages-count">15</span>)
-      </button>
-      <button onclick="switchTab('viewbooster')" id="tab-viewbooster" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
-        <i class="fa-solid fa-eye text-cyan-400"></i> View & Reach Booster
-      </button>
-    </div>
-
-    <!-- Links & TiDB Cloud Indicator -->
-    <div class="flex items-center space-x-3 text-sm">
-      <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-800/80 border border-slate-700 text-xs">
-        <span class="text-slate-400">Wallet:</span>
-        <span class="font-bold text-emerald-400 font-mono" id="nav-user-balance">$100.00</span>
-        <button onclick="quickAddFunds()" class="text-[10px] bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 px-1.5 py-0.5 rounded font-bold transition" title="Add Demo Funds">+</button>
+    <!-- System Badges -->
+    <div class="flex items-center space-x-3 text-xs">
+      <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-800 border border-slate-700 text-slate-300">
+        <i class="fa-solid fa-mobile-screen text-cyan-400"></i>
+        <span>Device Pool:</span>
+        <strong class="text-cyan-400 font-mono" id="nav-pool-size">695 Unique Profiles</strong>
       </div>
 
-      <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold">
-        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-        <i class="fa-solid fa-cloud text-xs"></i> TiDB Cloud
+      <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-semibold">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <i class="fa-solid fa-shield-check"></i> Stealth Active
       </div>
 
-      <a href="/docs" target="_blank" class="text-slate-400 hover:text-indigo-400 transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-surface-900">
-        <i class="fa-solid fa-book"></i> Swagger Docs
+      <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-semibold">
+        <i class="fa-solid fa-database"></i> TiDB Cloud
+      </div>
+
+      <a href="/docs" target="_blank" class="text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-surface-900">
+        <i class="fa-solid fa-book"></i> API
       </a>
     </div>
   </nav>
@@ -104,617 +84,220 @@
   <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
 
     <!-- Top KPI Metric Cards -->
-    <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-5 shadow-sm hover:border-slate-700 transition">
         <div class="flex items-center justify-between">
-          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Total Orders</span>
-          <span class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center"><i class="fa-solid fa-layer-group"></i></span>
+          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Total Views Boosted</span>
+          <span class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center"><i class="fa-solid fa-circle-play"></i></span>
         </div>
-        <div class="text-3xl font-bold mt-2" id="kpi-total-orders">0</div>
-        <div class="text-xs text-slate-500 mt-1">All time engagement orders</div>
+        <div class="text-3xl font-bold mt-2 text-cyan-400 font-mono" id="kpi-total-views">0</div>
+        <div class="text-xs text-slate-500 mt-1">Live recorded in TiDB Cloud</div>
       </div>
 
-      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
+      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-5 shadow-sm hover:border-slate-700 transition">
         <div class="flex items-center justify-between">
-          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Active In-Progress</span>
-          <span class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Device Pool (Zero Redundancy)</span>
+          <span class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center"><i class="fa-solid fa-fingerprint"></i></span>
         </div>
-        <div class="text-3xl font-bold mt-2 text-amber-400" id="kpi-in-progress">0</div>
-        <div class="text-xs text-slate-500 mt-1">Live drip-feed running</div>
+        <div class="text-3xl font-bold mt-2 text-indigo-400 font-mono" id="kpi-devices-count">695 Devices</div>
+        <div class="text-xs text-slate-500 mt-1">iPhone 16, S24, Pixel 9, Mac, PC</div>
       </div>
 
-      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
+      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-5 shadow-sm hover:border-slate-700 transition">
         <div class="flex items-center justify-between">
-          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Completed</span>
-          <span class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-check"></i></span>
+          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Dwell Watch Time</span>
+          <span class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-clock"></i></span>
         </div>
-        <div class="text-3xl font-bold mt-2 text-emerald-400" id="kpi-completed">0</div>
-        <div class="text-xs text-slate-500 mt-1">Successfully fulfilled</div>
+        <div class="text-3xl font-bold mt-2 text-emerald-400 font-mono">Up to 60s</div>
+        <div class="text-xs text-slate-500 mt-1">1-Min Deep Retention (Algorithm Trigger)</div>
       </div>
 
-      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
+      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-5 shadow-sm hover:border-slate-700 transition">
         <div class="flex items-center justify-between">
-          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Dummy Personas</span>
-          <span class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center"><i class="fa-solid fa-users"></i></span>
+          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Anti-Bot Evasion</span>
+          <span class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center"><i class="fa-solid fa-user-secret"></i></span>
         </div>
-        <div class="text-3xl font-bold mt-2 text-purple-400" id="kpi-personas">0</div>
-        <div class="text-xs text-slate-500 mt-1">Available active accounts</div>
+        <div class="text-3xl font-bold mt-2 text-purple-400">100% Stealth</div>
+        <div class="text-xs text-slate-500 mt-1">No Webdriver • Human Jitter • WebGL</div>
       </div>
     </section>
 
-    <!-- TAB 1: ORDERS & SIMULATIONS -->
-    <div id="section-orders" class="space-y-6">
+    <!-- Main Campaign Launcher Card -->
+    <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md space-y-6">
       
-      <!-- New Order Creation Panel -->
-      <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
-        <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-800">
-          <div>
-            <h2 class="text-lg font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-plus-circle text-indigo-400"></i> New Engagement Simulation
-            </h2>
-            <p class="text-xs text-slate-400 mt-0.5">Simulate fake followers, likes, comments, or views with stochastic pacing</p>
-          </div>
-          <button onclick="refreshOrders()" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-800 transition flex items-center gap-1.5">
-            <i class="fa-solid fa-arrows-rotate"></i> Refresh
-          </button>
-        </div>
-
-        <form id="order-form" onsubmit="handleCreateOrder(event)" class="space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            
-            <!-- Service Selection -->
-            <div>
-              <label class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Select Service</label>
-              <select id="order-service" onchange="onServiceChange()" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition" required>
-                <!-- Populated via JS -->
-              </select>
-            </div>
-
-            <!-- Target URL -->
-            <div>
-              <label class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Target Post / Page URL</label>
-              <input type="url" id="order-target" placeholder="https://facebook.com/watch/?v=12345" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition" required>
-            </div>
-
-            <!-- Quantity -->
-            <div>
-              <label class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Quantity</label>
-              <input type="number" id="order-quantity" value="25" min="5" max="50000" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition" required>
-            </div>
-          </div>
-
-          <!-- Pacing & Drip Options -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-            
-            <!-- Drip Feed Toggle -->
-            <div class="bg-surface-800/60 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
-              <div>
-                <span class="text-sm font-medium text-white block">Drip-Feed Pacing</span>
-                <span class="text-xs text-slate-400">Gaussian human delay between actions</span>
-              </div>
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" id="order-drip" class="sr-only peer" checked onchange="toggleIntervalInput()">
-                <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-              </label>
-            </div>
-
-            <!-- Interval seconds -->
-            <div id="interval-container" class="bg-surface-800/60 border border-slate-800 rounded-xl p-3">
-              <div class="flex justify-between items-center mb-1">
-                <span class="text-xs font-semibold text-slate-300">Interval Speed:</span>
-                <span class="text-xs font-bold text-indigo-400" id="interval-val-label">3 seconds</span>
-              </div>
-              <input type="range" id="order-interval" min="1" max="30" value="3" oninput="document.getElementById('interval-val-label').innerText = this.value + ' seconds'" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500">
-            </div>
-
-            <!-- Action Button -->
-            <div class="flex items-end">
-              <button type="submit" id="btn-submit-order" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-medium py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2">
-                <i class="fa-solid fa-play"></i> Launch Simulation
-              </button>
-            </div>
-          </div>
-
-          <!-- Spintax / Comments section (Conditional) -->
-          <div id="comments-box" class="hidden pt-2">
-            <div class="flex items-center justify-between mb-1.5">
-              <label class="block text-xs font-semibold uppercase text-slate-400">Custom Comments / Spintax (1 per line or {spintax})</label>
-              <div class="flex gap-2">
-                <button type="button" onclick="insertSpintaxPreset(1)" class="text-xs text-indigo-400 hover:text-indigo-300 px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20">Preset: Positive</button>
-                <button type="button" onclick="insertSpintaxPreset(2)" class="text-xs text-purple-400 hover:text-purple-300 px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20">Preset: Engaging</button>
-              </div>
-            </div>
-            <textarea id="order-comments" rows="3" placeholder="{Great|Awesome|Incredible} post! {Loved this|Keep it up} 🔥" class="w-full bg-surface-800 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition font-mono"></textarea>
-          </div>
-        </form>
-      </section>
-
-      <!-- Active Orders Table -->
-      <section class="bg-surface-900 border border-slate-800 rounded-2xl shadow-md overflow-hidden">
-        <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+        <div>
           <h2 class="text-lg font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-list-check text-slate-400"></i> Active & Recent Orders
+            <i class="fa-solid fa-rocket text-cyan-400"></i> Launch Authentic Facebook & Reel View Campaign
           </h2>
-          <span class="text-xs text-slate-500" id="polling-indicator"><i class="fa-solid fa-rotate text-indigo-400 animate-spin mr-1"></i> Live Auto-refreshing (2s)</span>
+          <p class="text-xs text-slate-400 mt-1">
+            Meta EdgeRank algorithm-ke trigger korar jonno protita view-e <strong>alada device fingerprint</strong>, <strong>realistic video stream watch-time</strong> (10s theke 60s), ebong <strong>Google/Facebook App referrers</strong> inject kora hoy jaate post-er Reach hajar hajar real user-der kache pouchay!
+          </p>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm text-slate-300">
-            <thead class="bg-surface-800/80 text-xs uppercase font-semibold text-slate-400 tracking-wider">
-              <tr>
-                <th class="px-6 py-3.5">Order ID</th>
-                <th class="px-6 py-3.5">Service</th>
-                <th class="px-6 py-3.5">Target</th>
-                <th class="px-6 py-3.5 w-48">Progress</th>
-                <th class="px-6 py-3.5">Status</th>
-                <th class="px-6 py-3.5 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="orders-table-body" class="divide-y divide-slate-800">
-              <tr>
-                <td colspan="6" class="px-6 py-8 text-center text-slate-500">
-                  <i class="fa-solid fa-spinner fa-spin text-xl mb-2 block"></i> Loading orders...
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- Anti-Detection Pillars -->
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-[10px] px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 flex items-center gap-1 font-mono">
+            <i class="fa-solid fa-check text-emerald-400"></i> navigator.webdriver = undefined
+          </span>
+          <span class="text-[10px] px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 flex items-center gap-1 font-mono">
+            <i class="fa-solid fa-check text-emerald-400"></i> WebGL GPU Spoofed
+          </span>
+          <span class="text-[10px] px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 flex items-center gap-1 font-mono">
+            <i class="fa-solid fa-check text-emerald-400"></i> Zero Device Redundancy
+          </span>
         </div>
-      </section>
-    </div>
+      </div>
 
-    <!-- TAB 2: PERSONA GENERATOR & POOL -->
-    <div id="section-personas" class="hidden space-y-6">
-      
-      <!-- Generator Bar -->
-      <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div>
-            <h2 class="text-lg font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-user-plus text-purple-400"></i> Dummy Persona Generator
-            </h2>
-            <p class="text-xs text-slate-400 mt-0.5">Instantly generate authentic profiles with localized avatars, handles, and realistic biographies.</p>
+      <!-- Campaign Form -->
+      <form id="view-boost-form" onsubmit="handleLaunchViewBoost(event)" class="space-y-5">
+        
+        <!-- Target URL -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-semibold uppercase text-slate-400">Target Facebook Reel / Video / Post URL</label>
+            <span class="text-[11px] text-cyan-400 font-mono">Pre-filled with your Harry Potter Reel</span>
           </div>
-
-          <div class="flex items-center gap-3 w-full md:w-auto">
-            <select id="persona-locale" class="bg-surface-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500">
-              <option value="en_US">🇺🇸 United States (en_US)</option>
-              <option value="bn_BD">🇧🇩 Bangladesh (bn_BD)</option>
-              <option value="en_GB">🇬🇧 United Kingdom (en_GB)</option>
-            </select>
-
-            <select id="persona-count" class="bg-surface-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500">
-              <option value="5">5 Personas</option>
-              <option value="10" selected>10 Personas</option>
-              <option value="25">25 Personas</option>
-              <option value="50">50 Personas</option>
-            </select>
-
-            <button onclick="handleGeneratePersonas()" id="btn-generate-personas" class="bg-purple-600 hover:bg-purple-500 text-white font-medium px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 whitespace-nowrap shadow-md shadow-purple-600/30">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> Generate
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Personas Grid -->
-      <section>
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="font-bold text-white text-base">Active Account Pool</h3>
-          <span class="text-xs text-slate-400">Auto-rotated during simulations</span>
-        </div>
-        <div id="personas-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Populated via JS -->
-        </div>
-      </section>
-    </div>
-
-    <!-- TAB 3: SMM API V2 TESTER -->
-    <div id="section-smm" class="hidden space-y-6">
-      <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
-        <h2 class="text-lg font-bold text-white flex items-center gap-2 mb-1">
-          <i class="fa-solid fa-code text-indigo-400"></i> Standard SMM API v2 Quick Tester
-        </h2>
-        <p class="text-xs text-slate-400 mb-6">Test the industry standard SMM endpoint (`/api/v2`) directly from here with real POST/GET parameters.</p>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <button onclick="testSMM('services')" class="bg-surface-800 hover:bg-slate-700 border border-slate-700 rounded-xl p-4 text-left transition group">
-            <div class="text-xs font-bold uppercase text-indigo-400 mb-1">Action: services</div>
-            <div class="text-sm font-semibold text-white">List All Services</div>
-            <div class="text-xs text-slate-500 mt-1">Returns array of dummy services</div>
-          </button>
-
-          <button onclick="testSMM('balance')" class="bg-surface-800 hover:bg-slate-700 border border-slate-700 rounded-xl p-4 text-left transition group">
-            <div class="text-xs font-bold uppercase text-emerald-400 mb-1">Action: balance</div>
-            <div class="text-sm font-semibold text-white">Check Mock Balance</div>
-            <div class="text-xs text-slate-500 mt-1">Returns current balance & currency</div>
-          </button>
-
-          <button onclick="testSMM('add_sample')" class="bg-surface-800 hover:bg-slate-700 border border-slate-700 rounded-xl p-4 text-left transition group">
-            <div class="text-xs font-bold uppercase text-amber-400 mb-1">Action: add</div>
-            <div class="text-sm font-semibold text-white">Place Sample Order</div>
-            <div class="text-xs text-slate-500 mt-1">10 Facebook Likes simulation</div>
-          </button>
-
-          <button onclick="testSMM('status_sample')" class="bg-surface-800 hover:bg-slate-700 border border-slate-700 rounded-xl p-4 text-left transition group">
-            <div class="text-xs font-bold uppercase text-purple-400 mb-1">Action: status</div>
-            <div class="text-sm font-semibold text-white">Query Status</div>
-            <div class="text-xs text-slate-500 mt-1">Check progress & remains</div>
-          </button>
-        </div>
-
-        <!-- Output response -->
-        <div class="bg-surface-950 border border-slate-800 rounded-xl p-4">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-mono text-slate-400 uppercase">Live Response Output</span>
-            <span class="text-xs text-slate-500" id="smm-time"></span>
-          </div>
-          <pre id="smm-response" class="font-mono text-xs text-emerald-400 overflow-x-auto p-2 bg-black/40 rounded-lg max-h-80">Click any action card above to test the API...</pre>
-        </div>
-      </section>
-    </div>
-
-    <!-- TAB 4: REAL FB BOT (PLAYWRIGHT) -->
-    <div id="section-realfb" class="hidden space-y-6">
-      
-      <!-- Top Overview Banner -->
-      <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
-        <div class="flex items-start justify-between pb-4 border-b border-slate-800 mb-6">
-          <div>
-            <h2 class="text-lg font-bold text-white flex items-center gap-2">
-              <i class="fa-brands fa-facebook text-blue-500"></i> Multi-Account Fake Profile Bot Pool
-            </h2>
-            <p class="text-xs text-slate-400 mt-1">
-              Deliver real Facebook likes to your post using your connected <strong>Fake Accounts Pool</strong> without liking from your own personal profile!
-            </p>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" id="realfb-pool-count-badge">
-              <i class="fa-solid fa-users mr-1"></i> <span id="realfb-accounts-count">0</span> Fake Accounts Loaded
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">
+              <i class="fa-brands fa-facebook"></i>
             </span>
+            <input type="url" id="view-target-url" value="https://www.facebook.com/reel/1767246594345288" class="w-full bg-surface-800 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono transition" required>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Quantity & Preset Chips -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-semibold uppercase text-slate-400">Number of Real Views (Unique Devices)</label>
+            <!-- Preset buttons -->
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] text-slate-500 mr-1">Quick Select:</span>
+              <button type="button" onclick="setQuantity(50)" class="px-2.5 py-1 rounded-lg text-xs bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 font-bold transition">50 Views (Goal)</button>
+              <button type="button" onclick="setQuantity(100)" class="px-2.5 py-1 rounded-lg text-xs bg-surface-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium transition">100 Views</button>
+              <button type="button" onclick="setQuantity(200)" class="px-2.5 py-1 rounded-lg text-xs bg-surface-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium transition">200 Views</button>
+              <button type="button" onclick="setQuantity(500)" class="px-2.5 py-1 rounded-lg text-xs bg-surface-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium transition">500 Views (Max)</button>
+            </div>
+          </div>
+          <input type="number" id="view-quantity" value="50" min="2" max="500" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 font-bold transition" required>
+          <p class="text-[11px] text-slate-500 mt-1">Each of the 50 views is delivered by a <strong>completely distinct device</strong> (e.g. View #1 iPhone 16 Pro Max, View #2 Samsung S24 Ultra, View #3 Pixel 9 Pro...).</p>
+        </div>
+
+        <!-- Duration & Concurrency Controls -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           
-          <!-- LEFT: Batch Like Launcher -->
-          <div class="space-y-4">
-            <h3 class="text-sm font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-rocket text-indigo-400"></i> 1. Launch Fake Likes Order
-            </h3>
-
-            <form id="batch-like-form" onsubmit="handleBatchLike(event)" class="space-y-4">
-              <div>
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Target Facebook Post URL</label>
-                <input type="url" id="batch-url" value="https://www.facebook.com/photo?fbid=122103658497500888&set=a.122095228263500888" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono" required>
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Number of Likes</label>
-                  <input type="number" id="batch-quantity" value="5" min="1" max="50" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" required>
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Exclude My Profile ID</label>
-                  <input type="text" id="batch-exclude-uid" placeholder="e.g. 100012345678" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-300 focus:outline-none focus:border-indigo-500 font-mono">
-                </div>
-              </div>
-
-              <div class="flex items-center justify-between pt-2">
-                <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-400">
-                  <input type="checkbox" id="batch-visible" class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-0">
-                  <span>Show browser popup</span>
-                </label>
-
-                <button type="submit" id="btn-batch-like" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-5 py-2.5 rounded-xl text-xs transition flex items-center gap-2 shadow-lg shadow-indigo-600/30">
-                  <i class="fa-solid fa-play"></i> Send Likes From Fake Accounts
-                </button>
-              </div>
-            </form>
-
-            <!-- Results container -->
-            <div id="batch-results" class="hidden mt-4 p-4 rounded-xl bg-surface-950 border border-slate-800 space-y-2">
-              <div class="flex items-center justify-between text-xs font-semibold text-white">
-                <span>Batch Execution Summary</span>
-                <span id="batch-status-pill" class="px-2 py-0.5 rounded text-[10px] bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Running...</span>
-              </div>
-              <div id="batch-logs-list" class="space-y-1.5 max-h-48 overflow-y-auto text-xs font-mono"></div>
-            </div>
-          </div>
-
-          <!-- RIGHT: Bulk Fake Accounts Importer -->
-          <div class="space-y-4">
-            <h3 class="text-sm font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-user-plus text-emerald-400"></i> 2. Bulk Import Fake Accounts Pool
-            </h3>
-
-            <form id="bulk-import-form" onsubmit="handleBulkImport(event)" class="space-y-3">
-              <div>
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Paste Fake Accounts Cookies (1 per line)</label>
-                <textarea id="bulk-import-data" rows="5" placeholder="Fake User 1|c_user=100099887766; xs=38%3Aabc...&#10;Fake User 2|c_user=100055443322; xs=38%3Axyz..." class="w-full bg-surface-800 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono" required></textarea>
-                <p class="text-[11px] text-slate-500 mt-1">Format: <code>Account Name | c_user=...; xs=...;</code> or just the cookie string per line.</p>
-              </div>
-
-              <button type="submit" id="btn-bulk-import" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20">
-                <i class="fa-solid fa-file-import"></i> Save Fake Accounts to Pool
-              </button>
-            </form>
-
-            <!-- Connected Accounts Mini List -->
-            <div class="pt-2">
-              <div class="flex items-center justify-between text-xs font-semibold text-slate-400 mb-2">
-                <span>Active Accounts in Pool</span>
-                <button onclick="loadFBAccountsList()" class="text-indigo-400 hover:underline text-[11px]">Refresh Pool</button>
-              </div>
-              <div id="fb-accounts-table-body" class="space-y-1.5 max-h-40 overflow-y-auto text-xs">
-                <div class="text-slate-500 text-center py-4">Loading accounts...</div>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-    </div>
-
-    <!-- TAB 5: PAGE FARM & BOT SWARM -->
-    <div id="section-pagefarm" class="hidden space-y-6">
-      
-      <!-- Top Overview Header -->
-      <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-4 border-b border-slate-800 mb-6">
+          <!-- Dwell Watch Duration -->
           <div>
-            <h2 class="text-lg font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-flag text-pink-500"></i> Facebook Page Farm & Bot Swarm Engine
-            </h2>
-            <p class="text-xs text-slate-400 mt-1">
-              Akta single Facebook account-er under-e <strong>20 theke 50 ti Pages</strong> toiri kore hajar hajar alada alada Page identity theke Like & Comments deliver kora jay (0 phone verification required)!
-            </p>
+            <label class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">
+              <i class="fa-solid fa-stopwatch text-emerald-400 mr-1"></i> Watch Time / Dwell Retention (Up to 1 Minute)
+            </label>
+            <select id="view-dwell-time" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 transition">
+              <option value="10">10s — Fast View Boost (Meta 3s+ Video Play Counted)</option>
+              <option value="20" selected>20s — High Retention Reel Watch (Recommended for Viral Reach)</option>
+              <option value="35">35s — Deep Algorithmic Exploration (High Watch-Time %)</option>
+              <option value="60">60s — 1-Minute Full Watch Time (Maximum Explore Feed Distribution)</option>
+            </select>
+            <p class="text-[11px] text-slate-500 mt-1">Reels-e 15s+ watch-time hole Facebook-er recommendation AI post-ti Explore-e push kore!</p>
           </div>
 
-          <div class="flex items-center gap-3">
-            <button onclick="handleSpawnPages(5)" id="btn-spawn-pages" class="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-medium px-4 py-2 rounded-xl text-xs transition flex items-center gap-2 shadow-lg shadow-pink-600/20 whitespace-nowrap">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> + Spawn 5 New Pages
-            </button>
-            <button onclick="loadPagesList()" class="bg-surface-800 hover:bg-slate-700 text-slate-300 font-medium px-3 py-2 rounded-xl text-xs border border-slate-700 transition">
-              <i class="fa-solid fa-arrows-rotate"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- KPI Cards for Page Farm -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
-            <div class="text-xs text-slate-400 font-semibold uppercase">Parent Bot Accounts</div>
-            <div class="text-2xl font-bold text-indigo-400 mt-1">3 Active Bots</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">Alpha, Beta, Gamma Bot Accounts</div>
-          </div>
-
-          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
-            <div class="text-xs text-slate-400 font-semibold uppercase">Child Pages in Farm</div>
-            <div class="text-2xl font-bold text-pink-400 mt-1" id="kpi-farm-pages-count">15 Pages</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">Separate Page Identities & Avatars</div>
-          </div>
-
-          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
-            <div class="text-xs text-slate-400 font-semibold uppercase">Database Storage</div>
-            <div class="text-2xl font-bold text-cyan-400 mt-1">TiDB Cloud</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">Serverless Distributed MySQL</div>
-          </div>
-        </div>
-
-        <!-- Page Swarm Like Launcher -->
-        <div class="p-5 rounded-2xl bg-surface-950/70 border border-slate-800 space-y-4">
-          <h3 class="font-bold text-sm text-white flex items-center gap-2">
-            <i class="fa-solid fa-bolt text-amber-400"></i> Launch Swarm Like Order (Deliver Likes via Separate Pages)
-          </h3>
-
-          <form id="swarm-like-form" onsubmit="handleSwarmLike(event)" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="md:col-span-2">
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Target Facebook Post / Photo URL</label>
-                <input type="url" id="swarm-url" value="https://www.facebook.com/photo?fbid=122103658497500888&set=a.122095228263500888" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-pink-500 font-mono" required>
-              </div>
-
-              <div>
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Quantity of Page Likes</label>
-                <input type="number" id="swarm-quantity" value="10" min="1" max="50" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-pink-500 font-bold" required>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between pt-1">
-              <span class="text-xs text-slate-400"><i class="fa-solid fa-shield-heart text-pink-400 mr-1"></i> Each like is delivered by a distinct page name with natural 0.5s pacing</span>
-              <button type="submit" id="btn-swarm-like" class="bg-gradient-to-r from-pink-600 to-indigo-600 hover:from-pink-500 hover:to-indigo-500 text-white font-medium px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2 shadow-lg shadow-pink-600/30">
-                <i class="fa-solid fa-play"></i> Launch Swarm Likes Order
-              </button>
-            </div>
-          </form>
-
-          <!-- Swarm Live Output -->
-          <div id="swarm-results" class="hidden mt-4 p-4 rounded-xl bg-surface-900 border border-slate-800 space-y-2">
-            <div class="flex items-center justify-between text-xs font-semibold text-white pb-2 border-b border-slate-800">
-              <span id="swarm-result-heading">Delivering likes across Page Farm...</span>
-              <span id="swarm-status-badge" class="px-2 py-0.5 rounded text-[10px] bg-pink-500/10 text-pink-400 border border-pink-500/20 font-bold">In Progress</span>
-            </div>
-            <div id="swarm-logs-list" class="space-y-1.5 max-h-56 overflow-y-auto text-xs font-mono"></div>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- Sub-Pages Grid -->
-      <section>
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="font-bold text-white text-base flex items-center gap-2">
-            <i class="fa-solid fa-network-wired text-indigo-400"></i> Active Child Pages in Swarm
-          </h3>
-          <span class="text-xs text-slate-400">Stored on TiDB Cloud Serverless</span>
-        </div>
-        <div id="pages-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <!-- Populated via JS -->
-        </div>
-      </section>
-
-    </div>
-
-    <!-- TAB 6: ORGANIC VIEWS & VIRAL REACH BOOSTER -->
-    <div id="section-viewbooster" class="hidden space-y-6">
-
-      <!-- Header Banner -->
-      <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-4 border-b border-slate-800 mb-6">
+          <!-- Parallel Browser Workers -->
           <div>
-            <h2 class="text-lg font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-eye text-cyan-400"></i> Facebook Organic Views & Viral Reach Booster
-            </h2>
-            <p class="text-xs text-slate-400 mt-1">
-              Playwright Browser Cluster diye <strong>High Dwell Retention (8s-25s)</strong>, <strong>Multi-Device Emulation</strong> (iPhone, Samsung, Mac, Windows) ebong <strong>Organic Referrers</strong> (Google, FB Feed, Twitter) simulate kore Meta EdgeRank Algorithm-ke trigger kore jaate post-er Reach hajar hajar real user-der kache pouchay!
-            </p>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <span class="px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-              0 Login / 0 Account Needed
-            </span>
-          </div>
-        </div>
-
-        <!-- KPI Metric Cards for View Booster -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
-            <div class="text-xs text-slate-400 font-semibold uppercase">Total Views Boosted</div>
-            <div class="text-2xl font-bold text-cyan-400 mt-1" id="kpi-view-delivered">0</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">Verified impressions delivered</div>
-          </div>
-
-          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
-            <div class="text-xs text-slate-400 font-semibold uppercase">Algorithm Retention</div>
-            <div class="text-2xl font-bold text-emerald-400 mt-1" id="kpi-view-dwell">12.5s Avg</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">High Dwell Time (Anti-Bounce)</div>
-          </div>
-
-          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
-            <div class="text-xs text-slate-400 font-semibold uppercase">Device Emulation</div>
-            <div class="text-2xl font-bold text-indigo-400 mt-1">6 Profiles</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">iPhone, Galaxy, Pixel, Mac, PC</div>
-          </div>
-
-          <div class="p-4 rounded-xl bg-surface-950 border border-slate-800">
-            <div class="text-xs text-slate-400 font-semibold uppercase">Organic Traffic Origin</div>
-            <div class="text-2xl font-bold text-pink-400 mt-1">Multi-Referrer</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">Google, FB App, Twitter/X</div>
-          </div>
-        </div>
-
-        <!-- Launch View & Reach Campaign Form -->
-        <div class="p-5 rounded-2xl bg-surface-950/70 border border-slate-800 space-y-4">
-          <h3 class="font-bold text-sm text-white flex items-center gap-2">
-            <i class="fa-solid fa-rocket text-cyan-400"></i> Launch New Organic View & Reach Campaign
-          </h3>
-
-          <form id="view-boost-form" onsubmit="handleLaunchViewBoost(event)" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              
-              <!-- Target URL -->
-              <div class="md:col-span-2">
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Target Facebook Post / Video / Reel URL</label>
-                <input type="url" id="view-target-url" value="https://www.facebook.com/photo?fbid=122103658497500888&set=a.122095228263500888" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono" required>
-              </div>
-
-              <!-- Quantity -->
-              <div>
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Number of Views</label>
-                <input type="number" id="view-quantity" value="15" min="2" max="200" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-bold" required>
-              </div>
-
-              <!-- Dwell Retention Mode -->
-              <div>
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Dwell Retention (Reach Multiplier)</label>
-                <select id="view-dwell-time" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
-                  <option value="6">Fast Boost (6 seconds dwell)</option>
-                  <option value="12" selected>Organic Reach Mode (12s dwell - Recommended)</option>
-                  <option value="20">Deep Viral Retention (20s dwell - Best for Explore Feed)</option>
-                </select>
-              </div>
-
-            </div>
-
-            <div class="flex items-center justify-between pt-1">
-              <div class="text-xs text-slate-400 flex items-center gap-1.5">
-                <i class="fa-solid fa-shield-halved text-cyan-400"></i>
-                <span>Simulates real reading, viewport scrolling, video stream triggering, and diverse mobile headers</span>
-              </div>
-
-              <button type="submit" id="btn-launch-views" class="bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-medium px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2 shadow-lg shadow-cyan-600/30">
-                <i class="fa-solid fa-play"></i> Launch Real View & Reach Campaign
-              </button>
-            </div>
-          </form>
-
-          <!-- Live Progress Terminal -->
-          <div id="view-progress-box" class="hidden mt-4 p-5 rounded-xl bg-surface-900 border border-slate-800 space-y-3">
-            <div class="flex items-center justify-between">
-              <div>
-                <h4 class="font-bold text-sm text-white flex items-center gap-2" id="view-progress-heading">
-                  <i class="fa-solid fa-spinner fa-spin text-cyan-400"></i> Boosting Views & Organic Reach...
-                </h4>
-                <p class="text-xs text-slate-400 mt-0.5" id="view-progress-sub">Running parallel Playwright headless browser engines</p>
-              </div>
-              <span id="view-status-badge" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono">0 / 0 Delivered</span>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="w-full bg-surface-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
-              <div id="view-progress-bar" class="bg-gradient-to-r from-cyan-500 to-indigo-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
-            </div>
-
-            <!-- Live Logs Table -->
-            <div class="mt-3">
-              <div class="text-xs font-semibold text-slate-400 mb-2 flex items-center justify-between">
-                <span>Live View Impressions Stream</span>
-                <span class="text-[10px] text-slate-500 font-mono">TiDB Cloud Synced</span>
-              </div>
-              <div id="view-logs-table" class="space-y-1.5 max-h-64 overflow-y-auto text-xs font-mono">
-                <!-- Populated via JS -->
-              </div>
-            </div>
+            <label class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">
+              <i class="fa-solid fa-microchip text-indigo-400 mr-1"></i> Parallel Browser Workers (Concurrency)
+            </label>
+            <select id="view-concurrency" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 transition">
+              <option value="2">2 Parallel Workers (Quiet Background)</option>
+              <option value="4" selected>4 Parallel Workers (Fast & Natural Delivery)</option>
+              <option value="6">6 Parallel Workers (Turbo High-Speed)</option>
+            </select>
+            <p class="text-[11px] text-slate-500 mt-1">Runs concurrent Playwright browser sessions simultaneously.</p>
           </div>
 
         </div>
 
-      </section>
+        <!-- Submit Button -->
+        <div class="pt-2 flex items-center justify-between">
+          <div class="text-xs text-slate-400 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>Ready to deliver 50+ real views without Facebook detection</span>
+          </div>
 
-    </div>
+          <button type="submit" id="btn-launch-views" class="bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 hover:from-cyan-500 hover:via-indigo-500 hover:to-purple-500 text-white font-bold px-8 py-3 rounded-xl text-xs transition flex items-center gap-2.5 shadow-xl shadow-cyan-600/30">
+            <i class="fa-solid fa-play"></i> Launch 50+ Real Views on Facebook Reel
+          </button>
+        </div>
 
-  </main>
+      </form>
 
-  <!-- LOGS MODAL -->
-  <div id="logs-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
-      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+      <!-- Real-Time Progress Box -->
+      <div id="view-progress-box" class="hidden mt-6 p-6 rounded-2xl bg-surface-950 border border-slate-800 space-y-4">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800/80">
+          <div>
+            <h4 class="font-bold text-sm text-white flex items-center gap-2" id="view-progress-heading">
+              <i class="fa-solid fa-spinner fa-spin text-cyan-400"></i> Delivering Real Views & Video Watch-Time...
+            </h4>
+            <p class="text-xs text-slate-400 mt-0.5" id="view-progress-sub">Playing Reel video stream with unique mobile & desktop profiles</p>
+          </div>
+          <span id="view-status-badge" class="px-3 py-1 rounded-xl text-xs font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono">0 / 50 Delivered (0%)</span>
+        </div>
+
+        <!-- Animated Progress Bar -->
+        <div class="w-full bg-surface-900 rounded-full h-3 overflow-hidden border border-slate-800 p-0.5">
+          <div id="view-progress-bar" class="bg-gradient-to-r from-cyan-500 via-indigo-500 to-pink-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <!-- Live Impression Stream -->
+        <div class="pt-2">
+          <div class="text-xs font-semibold text-slate-300 mb-2 flex items-center justify-between">
+            <span><i class="fa-solid fa-satellite-dish text-cyan-400 mr-1.5"></i> Live Device Impressions Stream</span>
+            <span class="text-[10px] text-slate-500 font-mono">Zero Device Duplication • Synced to TiDB Cloud</span>
+          </div>
+          <div id="view-logs-table" class="space-y-2 max-h-80 overflow-y-auto text-xs font-mono pr-1">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Past Campaigns Audit Log (TiDB Cloud Backed) -->
+    <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
+      <div class="flex items-center justify-between mb-4">
         <div>
           <h3 class="font-bold text-white text-base flex items-center gap-2">
-            <i class="fa-solid fa-terminal text-indigo-400"></i> Simulation Audit Logs
+            <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> View Booster Campaign History
           </h3>
-          <span class="text-xs text-slate-400 font-mono" id="modal-order-id">Order ID: ...</span>
+          <p class="text-xs text-slate-400 mt-0.5">Permanently stored on TiDB Cloud Serverless MySQL</p>
         </div>
-        <button onclick="closeLogsModal()" class="text-slate-400 hover:text-white p-2">
-          <i class="fa-solid fa-xmark text-lg"></i>
+        <button onclick="refreshOrders()" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-800 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-arrows-rotate"></i> Refresh History
         </button>
       </div>
 
-      <div class="p-6 overflow-y-auto space-y-2 flex-1 font-mono text-xs" id="modal-logs-body">
-        <!-- Log items -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="bg-surface-950 text-slate-400 text-[11px] uppercase tracking-wider font-semibold border-b border-slate-800">
+            <tr>
+              <th class="px-5 py-3">Order ID</th>
+              <th class="px-5 py-3">Target Reel / Post</th>
+              <th class="px-5 py-3 text-center">Delivered</th>
+              <th class="px-5 py-3 text-center">Status</th>
+              <th class="px-5 py-3">Date</th>
+            </tr>
+          </thead>
+          <tbody id="orders-table-body" class="divide-y divide-slate-800/60 text-xs">
+            <tr><td colspan="5" class="px-5 py-6 text-center text-slate-500">Loading campaign history from TiDB Cloud...</td></tr>
+          </tbody>
+        </table>
       </div>
-      
-      <div class="px-6 py-3 bg-surface-950 border-t border-slate-800 text-right">
-        <button onclick="closeLogsModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold">Close</button>
-      </div>
-    </div>
-  </div>
+    </section>
+
+  </main>
 
   <!-- Notification Toast -->
-  <div id="toast" class="fixed bottom-5 right-5 bg-indigo-600 text-white px-4 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 text-sm flex items-center gap-2">
+  <div id="toast" class="fixed bottom-5 right-5 bg-cyan-600 text-white px-4 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 text-sm flex items-center gap-2">
     <i class="fa-solid fa-circle-check text-base"></i> <span id="toast-msg">Notification</span>
   </div>
 

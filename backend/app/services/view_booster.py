@@ -5,47 +5,9 @@ import random
 from typing import Any, Callable, Dict, List
 from playwright.async_api import async_playwright
 
+from app.services.device_pool import get_unique_device_batch, get_device_pool_size
+
 logger = logging.getLogger("view_booster")
-
-DEVICE_PROFILES = [
-    {
-        "name": "iPhone 15 Pro (Safari Mobile)",
-        "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
-        "viewport": {"width": 393, "height": 852},
-        "is_mobile": True
-    },
-    {
-        "name": "Samsung Galaxy S24 (Chrome Mobile)",
-        "user_agent": "Mozilla/5.0 (Linux; Android 14; SM-S928B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.122 Mobile Safari/537.36",
-        "viewport": {"width": 412, "height": 915},
-        "is_mobile": True
-    },
-    {
-        "name": "Google Pixel 8 (Chrome Mobile)",
-        "user_agent": "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.165 Mobile Safari/537.36",
-        "viewport": {"width": 412, "height": 892},
-        "is_mobile": True
-    },
-    {
-        "name": "Windows 11 (Chrome Desktop)",
-        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-        "viewport": {"width": 1920, "height": 1080},
-        "is_mobile": False
-    },
-    {
-        "name": "MacBook Pro (Safari Desktop)",
-        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
-        "viewport": {"width": 1440, "height": 900},
-        "is_mobile": False
-    },
-    {
-        "name": "iPad Pro 12.9 (Safari Tablet)",
-        "user_agent": "Mozilla/5.0 (iPad; CPU OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
-        "viewport": {"width": 1024, "height": 1366},
-        "is_mobile": True
-    }
-]
-
 
 ORGANIC_REFERRERS = [
     "https://www.google.com/",
@@ -55,6 +17,40 @@ ORGANIC_REFERRERS = [
     "https://www.bing.com/",
     None
 ]
+
+# Advanced Anti-Bot Stealth injection to evade Facebook automation detection
+STEALTH_SCRIPT = """
+(() => {
+    // 1. Remove navigator.webdriver flag
+    Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+    delete navigator.__proto__.webdriver;
+
+    // 2. Mock Chrome runtime object
+    window.chrome = {
+        app: { isInstalled: false, InstallState: { DISABLED: 'disabled', INSTALLED: 'installed', NOT_INSTALLED: 'not_installed' } },
+        runtime: { PlatformOs: { MAC: 'mac', WIN: 'win', ANDROID: 'android' } },
+        loadTimes: () => {},
+        csi: () => {}
+    };
+
+    // 3. Emulate realistic plugins array
+    Object.defineProperty(navigator, 'plugins', {
+        get: () => [
+            { name: 'PDF Viewer', filename: 'internal-pdf-viewer', description: 'Portable Document Format' },
+            { name: 'Chrome PDF Viewer', filename: 'internal-pdf-viewer', description: 'Portable Document Format' },
+            { name: 'Chromium PDF Viewer', filename: 'internal-pdf-viewer', description: 'Portable Document Format' }
+        ]
+    });
+
+    // 4. Overwrite notification permissions
+    const originalQuery = window.navigator.permissions.query;
+    window.navigator.permissions.query = (parameters) => (
+        parameters.name === 'notifications' ?
+            Promise.resolve({ state: Notification.permission }) :
+            originalQuery(parameters)
+    );
+})();
+"""
 
 
 class ViewBoosterManager:
@@ -73,69 +69,97 @@ async def execute_single_view(
     browser,
     post_url: str,
     view_idx: int,
+    device_profile: Dict[str, Any],
     min_dwell: float,
     max_dwell: float,
     semaphore: asyncio.Semaphore
 ) -> Dict[str, Any]:
-    """Execute a single high-retention impression with realistic human browsing & referrer behavior."""
+    """Execute a single authentic impression with anti-bot evasion and zero device duplication."""
     async with semaphore:
-        profile = random.choice(DEVICE_PROFILES)
         referrer = random.choice(ORGANIC_REFERRERS)
         dwell_time = round(random.uniform(min_dwell, max_dwell), 1)
 
-        extra_headers = {"Referer": referrer} if referrer else {}
+        extra_headers = {}
+        if referrer:
+            extra_headers["Referer"] = referrer
+        extra_headers["Accept-Language"] = "en-US,en;q=0.9,bn;q=0.8"
 
         context = await browser.new_context(
-            user_agent=profile["user_agent"],
-            viewport=profile["viewport"],
-            is_mobile=profile["is_mobile"],
+            user_agent=device_profile["user_agent"],
+            viewport=device_profile["viewport"],
+            device_scale_factor=device_profile.get("device_scale_factor", 2.0),
+            is_mobile=device_profile.get("is_mobile", True),
+            has_touch=device_profile.get("has_touch", True),
             locale="en-US",
             extra_http_headers=extra_headers
         )
+
         page = await context.new_page()
 
+        # Inject stealth evasions before page script executes
+        await page.add_init_script(STEALTH_SCRIPT)
+
         try:
-            logger.info(f"[View #{view_idx}] Navigating via {profile['name']} (Ref: {referrer or 'Direct'})...")
-            await page.goto(post_url, wait_until="domcontentloaded", timeout=35000)
+            logger.info(f"[View #{view_idx}] {device_profile['name']} visiting {post_url} (Ref: {referrer or 'Direct'})...")
+            await page.goto(post_url, wait_until="domcontentloaded", timeout=40000)
 
-            # Wait initial render
-            await asyncio.sleep(random.uniform(1.5, 2.8))
+            # Human-like initial reading pause
+            await asyncio.sleep(random.uniform(2.0, 3.5))
 
-            # Simulate human behavior: realistic scroll down to content
-            scroll_amount = random.randint(200, 480)
-            await page.mouse.wheel(0, scroll_amount)
-            await asyncio.sleep(2.0)
-
-            # Check if video element is present to trigger play for video/reel views
+            # Simulate video stream playback if on Reel / Video
+            is_video = False
+            video_time = 0.0
             try:
-                video_locator = page.locator("video").first
-                if await video_locator.count() > 0 and await video_locator.is_visible():
-                    await video_locator.click(timeout=1500)
-                    logger.info(f"[View #{view_idx}] Triggered video player element for video view count!")
+                video_res = await page.evaluate("""() => {
+                    const v = document.querySelector('video');
+                    if (v) {
+                        v.muted = true;
+                        v.play().catch(() => {});
+                        return true;
+                    }
+                    return false;
+                }""")
+                if video_res:
+                    is_video = True
+                    logger.info(f"[View #{view_idx}] Triggered video playback on Reel!")
             except Exception:
                 pass
 
-            # Simulate secondary reading scroll
-            await page.mouse.wheel(0, random.randint(100, 250))
-            
-            # Hold dwell time for organic reach & algorithm retention
-            remaining_dwell = max(1.5, dwell_time - 5.0)
-            await asyncio.sleep(remaining_dwell)
+            # Natural incremental reading actions during dwell time
+            elapsed = 3.5
+            scroll_count = 0
+            while elapsed < dwell_time:
+                step_sleep = min(random.uniform(2.5, 4.5), dwell_time - elapsed)
+                await asyncio.sleep(step_sleep)
+                elapsed += step_sleep
 
-            # Slight scroll adjustment
-            await page.mouse.wheel(0, -random.randint(60, 150))
-            await asyncio.sleep(0.8)
+                # Human-like micro scrolls and mouse moves
+                scroll_count += 1
+                if scroll_count % 2 == 1:
+                    await page.mouse.wheel(0, random.randint(120, 320))
+                else:
+                    await page.mouse.wheel(0, -random.randint(40, 100))
+
+            # Read final video playback progress if available
+            if is_video:
+                try:
+                    video_time = await page.evaluate("() => { const v = document.querySelector('video'); return v ? v.currentTime : 0; }")
+                except Exception:
+                    video_time = dwell_time
 
             ref_label = referrer.replace("https://", "").replace("/", "") if referrer else "Direct/App"
 
             return {
                 "view_idx": view_idx,
-                "device": profile["name"],
-                "viewport": f"{profile['viewport']['width']}x{profile['viewport']['height']}",
+                "device": device_profile["name"],
+                "platform": device_profile.get("platform", "Mobile"),
+                "viewport": f"{device_profile['viewport']['width']}x{device_profile['viewport']['height']}",
                 "referrer": ref_label,
                 "dwell_seconds": dwell_time,
+                "is_video": is_video,
+                "video_streamed_sec": round(video_time, 1) if is_video else 0,
                 "status": "SUCCESS",
-                "message": f"Delivered {dwell_time}s organic impression via {ref_label}",
+                "message": f"Watched Reel for {dwell_time}s ({device_profile['name']})",
                 "timestamp": datetime.datetime.now().strftime("%H:%M:%S")
             }
 
@@ -143,9 +167,13 @@ async def execute_single_view(
             logger.warning(f"[View #{view_idx}] Impression failed: {e}")
             return {
                 "view_idx": view_idx,
-                "device": profile["name"],
-                "viewport": f"{profile['viewport']['width']}x{profile['viewport']['height']}",
+                "device": device_profile["name"],
+                "platform": device_profile.get("platform", "Mobile"),
+                "viewport": f"{device_profile['viewport']['width']}x{device_profile['viewport']['height']}",
+                "referrer": "N/A",
                 "dwell_seconds": 0,
+                "is_video": False,
+                "video_streamed_sec": 0,
                 "status": "FAILED",
                 "message": str(e)[:100],
                 "timestamp": datetime.datetime.now().strftime("%H:%M:%S")
@@ -158,13 +186,13 @@ async def run_view_booster_campaign(
     task_id: str,
     post_url: str,
     quantity: int,
-    dwell_seconds: float = 6.0,
+    dwell_seconds: float = 12.0,
     concurrency: int = 3,
     on_progress: Callable[[Dict[str, Any]], None] | None = None
 ) -> Dict[str, Any]:
-    """Launch full concurrent view boosting campaign."""
-    min_dwell = max(4.0, dwell_seconds - 1.5)
-    max_dwell = dwell_seconds + 2.5
+    """Launch full concurrent view boosting campaign using unique device fingerprints with zero redundancy."""
+    min_dwell = max(5.0, dwell_seconds - 2.5)
+    max_dwell = dwell_seconds + 3.0
 
     task_record = {
         "task_id": task_id,
@@ -178,6 +206,9 @@ async def run_view_booster_campaign(
         "logs": []
     }
     manager.active_tasks[task_id] = task_record
+
+    # Guarantee unique device batch of size quantity from our 650+ device pool
+    device_batch = get_unique_device_batch(quantity)
 
     semaphore = asyncio.Semaphore(concurrency)
 
@@ -195,14 +226,16 @@ async def run_view_booster_campaign(
         try:
             tasks = []
             for i in range(1, quantity + 1):
-                # Small staggered delay between starting workers to look organic
-                await asyncio.sleep(random.uniform(0.3, 0.9))
+                device = device_batch[i - 1]
+                # Stagger worker launches slightly
+                await asyncio.sleep(random.uniform(0.4, 1.2))
 
-                async def worker_wrapper(idx=i):
+                async def worker_wrapper(idx=i, dev=device):
                     res = await execute_single_view(
                         browser=browser,
                         post_url=post_url,
                         view_idx=idx,
+                        device_profile=dev,
                         min_dwell=min_dwell,
                         max_dwell=max_dwell,
                         semaphore=semaphore
@@ -235,7 +268,7 @@ def run_campaign_in_thread(
     task_id: str,
     post_url: str,
     quantity: int,
-    dwell_seconds: float = 6.0,
+    dwell_seconds: float = 12.0,
     concurrency: int = 3
 ) -> Dict[str, Any]:
     """Runs the Playwright campaign inside a ProactorEventLoop thread on Windows."""
@@ -257,4 +290,3 @@ def run_campaign_in_thread(
         )
     finally:
         loop.close()
-

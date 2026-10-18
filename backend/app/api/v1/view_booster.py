@@ -10,16 +10,17 @@ from app.database import AsyncSessionLocal, get_db
 from app.models.order import Order
 from app.models.service import Service
 from app.models.task_log import TaskLog
+from app.services.device_pool import get_device_pool_size
 from app.services.view_booster import manager, run_campaign_in_thread, run_view_booster_campaign
 
 router = APIRouter(prefix="/view-booster", tags=["Facebook Views & Reach Booster"])
 
 
 class LaunchViewBoostRequest(BaseModel):
-    post_url: str = Field(..., example="https://www.facebook.com/photo?fbid=122103658497500888&set=a.122095228263500888")
-    quantity: int = Field(default=10, ge=1, le=200, description="Total views & impressions to deliver")
-    dwell_seconds: float = Field(default=8.0, ge=3.0, le=30.0, description="Dwell retention time per view in seconds")
-    concurrency: int = Field(default=3, ge=1, le=5, description="Number of parallel Playwright browser workers")
+    post_url: str = Field(..., example="https://www.facebook.com/reel/1767246594345288")
+    quantity: int = Field(default=50, ge=1, le=500, description="Total views & impressions to deliver (1-500)")
+    dwell_seconds: float = Field(default=15.0, ge=3.0, le=60.0, description="Dwell retention time per view in seconds (up to 60s)")
+    concurrency: int = Field(default=4, ge=1, le=10, description="Number of parallel Playwright browser workers")
 
 
 async def _run_background_view_campaign(task_id: str, order_id: str, post_url: str, quantity: int, dwell_seconds: float, concurrency: int):
@@ -125,3 +126,14 @@ async def get_view_boost_status(task_id: str):
         }
 
     return task
+
+
+@router.get("/pool-info")
+async def get_device_pool_info():
+    """Return total number of unique realistic device fingerprints available in the pool."""
+    return {
+        "total_unique_devices": get_device_pool_size(),
+        "stealth_evasion": "Enabled (navigator.webdriver bypass, WebGL spoofing, random bezier mouse/scroll jitters)",
+        "max_dwell_seconds": 60.0
+    }
+
