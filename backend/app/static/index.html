@@ -70,6 +70,9 @@
       <button onclick="switchTab('smm')" id="tab-smm" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
         <i class="fa-solid fa-code"></i> SMM API v2
       </button>
+      <button onclick="switchTab('realfb')" id="tab-realfb" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
+        <i class="fa-brands fa-facebook text-blue-400"></i> Real FB Bot
+      </button>
     </div>
 
     <!-- Links -->
@@ -332,6 +335,73 @@
             <span class="text-xs text-slate-500" id="smm-time"></span>
           </div>
           <pre id="smm-response" class="font-mono text-xs text-emerald-400 overflow-x-auto p-2 bg-black/40 rounded-lg max-h-80">Click any action card above to test the API...</pre>
+        </div>
+      </section>
+    <!-- TAB 4: REAL FB BOT (PLAYWRIGHT) -->
+    <div id="section-realfb" class="hidden space-y-6">
+      <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
+        <div class="flex items-start justify-between pb-4 border-b border-slate-800 mb-6">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i class="fa-brands fa-facebook text-blue-500"></i> Real Facebook Live Automation (Playwright)
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Eti real Facebook-e automated browser open kore post-e giye real "Like" button-e click kore, jate facebook.com-e live public like count bere jay!
+            </p>
+          </div>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+            <i class="fa-solid fa-shield-halved mr-1"></i> Stealth Browser
+          </span>
+        </div>
+
+        <form id="realfb-form" onsubmit="handleRealFBLike(event)" class="space-y-5">
+          <div>
+            <label class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Target Facebook Post / Photo URL</label>
+            <input type="url" id="realfb-url" value="https://www.facebook.com/photo?fbid=122103658497500888&set=a.122095228263500888" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 font-mono" required>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-xs font-semibold uppercase text-slate-400">Facebook Account Session Cookie</label>
+              <span class="text-xs text-indigo-400">Must include <code>c_user</code> and <code>xs</code></span>
+            </div>
+            <textarea id="realfb-cookies" rows="3" placeholder="c_user=100012345678; xs=38%3Aa1b2c3d4e5...; fr=0abc123...;" class="w-full bg-surface-800 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-blue-500 font-mono" required></textarea>
+            
+            <div class="mt-2 p-3 bg-surface-950/70 border border-slate-800 rounded-xl text-xs text-slate-400 space-y-1">
+              <p class="font-semibold text-slate-300"><i class="fa-solid fa-circle-info text-blue-400 mr-1"></i> Kivabe Facebook Cookie paben?</p>
+              <ol class="list-decimal list-inside space-y-0.5 text-[11px] text-slate-400">
+                <li>Apnar browser-e <span class="text-blue-400 font-mono">facebook.com</span> login thaka obosthay <kbd class="px-1 py-0.5 bg-slate-800 rounded text-slate-300">F12</kbd> ba <kbd class="px-1 py-0.5 bg-slate-800 rounded text-slate-300">Ctrl+Shift+I</kbd> chapun.</li>
+                <li><strong>Application</strong> (Chrome) ba <strong>Storage</strong> (Firefox) tab-e jan -> ba-pashe <strong>Cookies</strong> -> <strong>https://www.facebook.com</strong> select korun.</li>
+                <li>Sekhan theke <code class="text-emerald-400">c_user</code> ebong <code class="text-emerald-400">xs</code> er value copy kore ei format-e likhun: <code class="text-indigo-300">c_user=VALUE; xs=VALUE;</code></li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-400">
+              <input type="checkbox" id="realfb-visible" class="rounded bg-slate-800 border-slate-700 text-blue-600 focus:ring-0">
+              <span>Show browser window during click (non-headless)</span>
+            </label>
+
+            <button type="submit" id="btn-realfb-like" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-2.5 rounded-xl text-sm transition flex items-center gap-2 shadow-lg shadow-blue-600/30">
+              <i class="fa-solid fa-thumbs-up"></i> Click Real Like on Facebook
+            </button>
+          </div>
+        </form>
+
+        <!-- Live Result & Screenshot -->
+        <div id="realfb-result" class="hidden mt-6 pt-6 border-t border-slate-800 space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-white text-sm flex items-center gap-2" id="realfb-result-title">
+              <!-- Result Icon & Title -->
+            </h4>
+            <span class="text-xs text-slate-500" id="realfb-exec-time"></span>
+          </div>
+
+          <div id="realfb-screenshot-container" class="bg-surface-950 border border-slate-800 rounded-xl p-3">
+            <span class="text-xs text-slate-400 uppercase font-semibold block mb-2">Live Browser Screenshot Proof:</span>
+            <img id="realfb-screenshot" src="" alt="Facebook Action Screenshot" class="w-full max-h-[500px] object-contain rounded-lg border border-slate-800 bg-black">
+          </div>
         </div>
       </section>
     </div>

@@ -5,7 +5,7 @@ let lastSMMOrderId = null;
 
 // Tab switcher
 function switchTab(tab) {
-  const tabs = ['orders', 'personas', 'smm'];
+  const tabs = ['orders', 'personas', 'smm', 'realfb'];
   tabs.forEach(t => {
     const btn = document.getElementById(`tab-${t}`);
     const sec = document.getElementById(`section-${t}`);
@@ -410,3 +410,62 @@ async function testSMM(type) {
     output.innerText = `Error: ${err.message}`;
   }
 }
+
+// Handle Real Facebook Playwright Like Action
+async function handleRealFBLike(e) {
+  e.preventDefault();
+  const btn = document.getElementById("btn-realfb-like");
+  const url = document.getElementById("realfb-url").value.trim();
+  const cookies = document.getElementById("realfb-cookies").value.trim();
+  const visible = document.getElementById("realfb-visible").checked;
+
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Launching Browser & Clicking...`;
+
+  const resultDiv = document.getElementById("realfb-result");
+  const titleSpan = document.getElementById("realfb-result-title");
+  const timeSpan = document.getElementById("realfb-exec-time");
+  const img = document.getElementById("realfb-screenshot");
+
+  resultDiv.classList.remove("hidden");
+  titleSpan.innerHTML = `<span class="text-amber-400"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Opening stealth browser, navigating to post...</span>`;
+  timeSpan.innerText = "";
+  img.src = "";
+
+  const startTime = Date.now();
+
+  try {
+    const res = await fetch("/api/v1/fb-accounts/execute-like", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        post_url: url,
+        cookie_data: cookies,
+        headless: !visible
+      })
+    });
+
+    const data = await res.json();
+    const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+    timeSpan.innerText = `${duration}s execution`;
+
+    if (data.success) {
+      titleSpan.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-check-circle mr-1"></i> ${data.message || 'Successfully clicked Like on Facebook!'}</span>`;
+      showToast("Like successfully clicked on Facebook!");
+    } else {
+      titleSpan.innerHTML = `<span class="text-rose-400 font-bold"><i class="fa-solid fa-circle-exclamation mr-1"></i> ${data.error || 'Failed to like post'}</span>`;
+      showToast(data.error || "Failed to like post", true);
+    }
+
+    if (data.screenshot) {
+      img.src = data.screenshot + "?t=" + Date.now();
+    }
+  } catch (err) {
+    titleSpan.innerHTML = `<span class="text-rose-400 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Error: ${err.message}</span>`;
+    showToast(err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-thumbs-up"></i> Click Real Like on Facebook`;
+  }
+}
+

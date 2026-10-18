@@ -6,6 +6,7 @@ from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api.smm_v2 import router as smm_v2_router
+from app.api.v1.fb_accounts import router as fb_accounts_router
 from app.api.v1.orders import router as orders_router
 from app.api.v1.personas import router as personas_router
 from app.api.v1.services import router as services_router
@@ -45,6 +46,7 @@ if os.path.exists(static_dir):
 app.include_router(services_router, prefix=settings.API_V1_STR)
 app.include_router(personas_router, prefix=settings.API_V1_STR)
 app.include_router(orders_router, prefix=settings.API_V1_STR)
+app.include_router(fb_accounts_router, prefix=settings.API_V1_STR)
 app.include_router(smm_v2_router)
 
 
