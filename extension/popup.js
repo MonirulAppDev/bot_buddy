@@ -151,7 +151,53 @@ function setupEventListeners() {
       showStatus("Could not connect to Bot Buddy backend (http://127.0.0.1:8000). Is server running?", false);
     } finally {
       btn.disabled = false;
-      btn.innerText = "🔄 1-Click Sync Facebook to Backend";
+      btn.innerText = "🔄 1-Click Add Account to Pool";
+    }
+  });
+
+  // 5. Send Fake Account Likes (Excluding personal profile)
+  document.getElementById("btn-send-fake-likes").addEventListener("click", async () => {
+    if (!activeTab || !activeTab.url || !activeTab.url.includes("facebook.com")) {
+      showStatus("Please open a Facebook post first!", false);
+      return;
+    }
+
+    const btn = document.getElementById("btn-send-fake-likes");
+    const qty = parseInt(document.getElementById("popup-fake-qty").value) || 5;
+
+    btn.disabled = true;
+    btn.innerText = "Sending Fake Likes...";
+
+    try {
+      // Find my own UID from cookies so we can exclude it
+      let myUid = null;
+      try {
+        const cUserCookie = await chrome.cookies.get({ url: "https://www.facebook.com", name: "c_user" });
+        if (cUserCookie) myUid = cUserCookie.value;
+      } catch (e) {}
+
+      const res = await fetch("http://127.0.0.1:8000/api/v1/fb-accounts/batch-like", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          post_url: activeTab.url,
+          quantity: qty,
+          exclude_fb_user_id: myUid,
+          delay_seconds: 2.0,
+          headless: true
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Batch like failed");
+
+      showStatus(`Delivered ${data.delivered} / ${data.total_requested} likes from Fake Accounts Pool!`, true);
+    } catch (err) {
+      showStatus(err.message, false);
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "🚀 Send Fake Likes";
     }
   });
 }
+

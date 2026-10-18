@@ -151,3 +151,57 @@ async def execute_real_facebook_like(
                 "error": str(e),
                 "screenshot": f"/static/screenshots/{screenshot_name}" if os.path.exists(screenshot_path) else None
             }
+
+
+async def execute_batch_facebook_likes(
+    post_url: str,
+    account_list: list[dict[str, Any]],
+    quantity: int,
+    delay_seconds: float = 3.0,
+    headless: bool = True
+) -> dict[str, Any]:
+    """Execute real Facebook likes sequentially across multiple fake accounts."""
+    delivered = 0
+    failed = 0
+    logs = []
+
+    accounts_to_use = account_list[:quantity]
+
+    for idx, acc in enumerate(accounts_to_use, 1):
+        account_name = acc.get("account_name", f"Account #{idx}")
+        cookie_data = acc.get("cookie_data", "")
+
+        logger.info(f"[{idx}/{len(accounts_to_use)}] Executing like with account: {account_name}")
+        res = await execute_real_facebook_like(
+            post_url=post_url,
+            cookie_str=cookie_data,
+            headless=headless
+        )
+
+        if res.get("success"):
+            delivered += 1
+            status = "SUCCESS"
+        else:
+            failed += 1
+            status = "FAILED"
+
+        logs.append({
+            "account_id": acc.get("id"),
+            "account_name": account_name,
+            "status": status,
+            "message": res.get("message") or res.get("error"),
+            "screenshot": res.get("screenshot")
+        })
+
+        # Stochastic interval before next fake account
+        if idx < len(accounts_to_use):
+            await asyncio.sleep(delay_seconds)
+
+    return {
+        "post_url": post_url,
+        "total_requested": quantity,
+        "delivered": delivered,
+        "failed": failed,
+        "logs": logs
+    }
+

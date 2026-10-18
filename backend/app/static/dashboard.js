@@ -20,6 +20,8 @@ function switchTab(tab) {
 
   if (tab === 'personas') {
     loadPersonas();
+  } else if (tab === 'realfb') {
+    loadFBAccountsList();
   }
 }
 
@@ -466,6 +468,133 @@ async function handleRealFBLike(e) {
   } finally {
     btn.disabled = false;
     btn.innerHTML = `<i class="fa-solid fa-thumbs-up"></i> Click Real Like on Facebook`;
+  }
+}
+
+// Load Fake FB Accounts Pool
+async function loadFBAccountsList() {
+  const container = document.getElementById("fb-accounts-table-body");
+  const countBadge = document.getElementById("realfb-accounts-count");
+  if (!container) return;
+
+  try {
+    const res = await fetch("/api/v1/fb-accounts");
+    const accounts = await res.json();
+    countBadge.innerText = accounts.length;
+
+    if (accounts.length === 0) {
+      container.innerHTML = `<div class="text-slate-500 text-center py-3 text-xs">No fake accounts in pool yet. Paste cookies on the right to import!</div>`;
+      return;
+    }
+
+    container.innerHTML = accounts.map((acc, idx) => `
+      <div class="p-2.5 rounded-lg bg-surface-950 border border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-indigo-600/20 text-indigo-400 flex items-center justify-center font-bold text-[10px]">${idx + 1}</span>
+          <div>
+            <div class="font-bold text-white text-xs">${acc.account_name}</div>
+            <div class="text-[10px] text-slate-500 font-mono">UID: ${acc.fb_user_id || 'N/A'} • ${acc.total_likes_given} likes given</div>
+          </div>
+        </div>
+        <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+      </div>
+    `).join("");
+  } catch (err) {
+    container.innerHTML = `<div class="text-rose-400 text-xs">Failed to load account pool.</div>`;
+  }
+}
+
+// Handle Bulk Import of Fake Accounts
+async function handleBulkImport(e) {
+  e.preventDefault();
+  const btn = document.getElementById("btn-bulk-import");
+  const textarea = document.getElementById("bulk-import-data");
+  const rawData = textarea.value.trim();
+
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Importing...`;
+
+  try {
+    const res = await fetch("/api/v1/fb-accounts/bulk-import", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ raw_data: rawData })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Import failed");
+
+    showToast(`Successfully imported ${data.total_imported} fake accounts!`);
+    textarea.value = "";
+    await loadFBAccountsList();
+  } catch (err) {
+    showToast(err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-file-import"></i> Save Fake Accounts to Pool`;
+  }
+}
+
+// Handle Batch Liking across Fake Accounts Pool
+async function handleBatchLike(e) {
+  e.preventDefault();
+  const btn = document.getElementById("btn-batch-like");
+  const url = document.getElementById("batch-url").value.trim();
+  const quantity = parseInt(document.getElementById("batch-quantity").value);
+  const excludeUid = document.getElementById("batch-exclude-uid").value.trim();
+  const visible = document.getElementById("batch-visible").checked;
+
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sending Fake Likes...`;
+
+  const resultsDiv = document.getElementById("batch-results");
+  const statusPill = document.getElementById("batch-status-pill");
+  const logsList = document.getElementById("batch-logs-list");
+
+  resultsDiv.classList.remove("hidden");
+  statusPill.className = "px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20";
+  statusPill.innerText = "Running multi-account simulation...";
+  logsList.innerHTML = `<div class="text-slate-400 text-center py-2"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Cycling through fake accounts...</div>`;
+
+  try {
+    const res = await fetch("/api/v1/fb-accounts/batch-like", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        post_url: url,
+        quantity: quantity,
+        exclude_fb_user_id: excludeUid || null,
+        delay_seconds: 2.0,
+        headless: !visible
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Batch like failed");
+
+    statusPill.className = "px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+    statusPill.innerText = `Delivered ${data.delivered} / ${data.total_requested} Likes`;
+
+    logsList.innerHTML = data.logs.map(log => `
+      <div class="p-2 rounded bg-surface-900 border border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full ${log.status === 'SUCCESS' ? 'bg-emerald-400' : 'bg-rose-400'}"></span>
+          <span class="text-white font-bold">${log.account_name}</span>
+        </div>
+        <span class="${log.status === 'SUCCESS' ? 'text-emerald-400' : 'text-rose-400'}">${log.message}</span>
+      </div>
+    `).join("");
+
+    showToast(`Batch completed: ${data.delivered} fake likes delivered!`);
+    await loadFBAccountsList();
+  } catch (err) {
+    statusPill.className = "px-2 py-0.5 rounded text-[10px] bg-rose-500/10 text-rose-400 border border-rose-500/20";
+    statusPill.innerText = "Failed";
+    logsList.innerHTML = `<div class="text-rose-400 p-2">${err.message}</div>`;
+    showToast(err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-play"></i> Send Likes From Fake Accounts`;
   }
 }
 

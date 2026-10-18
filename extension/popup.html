@@ -165,14 +165,17 @@
 
   <!-- 1-Click Direct Actions on Active Tab -->
   <div class="card">
-    <div class="card-title">Direct Post Actions</div>
+    <div class="card-title">Direct Post Actions (Active Profile)</div>
+    <p style="font-size: 10px; color: #94a3b8; margin-bottom: 6px;">
+      Actions are performed by the Facebook account currently logged in this browser:
+    </p>
     
     <button id="btn-like" class="btn btn-primary">
-      👍 Like This Post (Direct)
+      👍 Like This Post (Current Profile)
     </button>
 
     <button id="btn-love" class="btn btn-love">
-      ❤️ Love React (Direct)
+      ❤️ Love React (Current Profile)
     </button>
 
     <div style="margin-top: 10px;">
@@ -187,14 +190,28 @@
     </div>
   </div>
 
-  <!-- 1-Click Auto Cookie Sync Card -->
-  <div class="card" style="border-color: #4f46e5;">
-    <div class="card-title" style="color: #a5b4fc;">Backend Integration</div>
-    <p style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">
-      Sync this browser's Facebook login session to Bot Buddy backend with 1 click (no copying needed!).
+  <!-- MULTI-ACCOUNT FAKE LIKES LAUNCHER (EXCLUDES PERSONAL PROFILE) -->
+  <div class="card" style="border-color: #6366f1;">
+    <div class="card-title" style="color: #a5b4fc;">Send Fake Account Likes (Exclude My Profile)</div>
+    <p style="font-size: 10px; color: #94a3b8; margin-bottom: 8px;">
+      Delivers likes to this post from your <strong>Fake Accounts Pool</strong> without liking with your own profile:
     </p>
-    <button id="btn-sync-cookies" class="btn btn-sync">
-      🔄 1-Click Sync Facebook to Backend
+    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+      <input type="number" id="popup-fake-qty" value="5" min="1" max="50" style="width: 80px; background: #0f172a; border: 1px solid #475569; color: white; padding: 6px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; text-align: center;">
+      <button id="btn-send-fake-likes" class="btn btn-sync" style="margin-bottom: 0; flex: 1;">
+        🚀 Send Fake Likes
+      </button>
+    </div>
+  </div>
+
+  <!-- 1-Click Auto Cookie Sync Card -->
+  <div class="card">
+    <div class="card-title">Connect Account to Pool</div>
+    <p style="font-size: 10px; color: #94a3b8; margin-bottom: 8px;">
+      Add this browser's account to your Bot Buddy accounts pool with 1 click:
+    </p>
+    <button id="btn-sync-cookies" class="btn btn-secondary">
+      🔄 1-Click Add Account to Pool
     </button>
   </div>
 
