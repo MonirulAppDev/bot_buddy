@@ -3,16 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bot Buddy — Premium Facebook Organic View & Reel Reach Booster</title>
+  <title>Bot Buddy — Social Performance & Campaign Studio</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Vue 3 CDN (Production) -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-
-  <!-- Canvas Confetti CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
   
   <!-- Font Awesome 6 Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -20,7 +17,7 @@
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -28,8 +25,8 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'SFMono-Regular', 'Menlo', 'monospace'],
           },
           colors: {
             brand: {
@@ -40,26 +37,11 @@
               600: '#0891b2',
             },
             surface: {
-              800: '#131b2e',
-              850: '#0f172a',
-              900: '#090d16',
-              950: '#04070f',
-            }
-          },
-          animation: {
-            'glow-pulse': 'glow 3s ease-in-out infinite',
-            'equalizer-1': 'equalizer 0.8s ease-in-out infinite alternate',
-            'equalizer-2': 'equalizer 1.2s ease-in-out infinite alternate',
-            'equalizer-3': 'equalizer 0.6s ease-in-out infinite alternate',
-          },
-          keyframes: {
-            glow: {
-              '0%, 100%': { opacity: '0.4' },
-              '50%': { opacity: '0.8' },
-            },
-            equalizer: {
-              '0%': { height: '3px' },
-              '100%': { height: '14px' },
+              700: '#1b2438',
+              800: '#111827',
+              850: '#0d1322',
+              900: '#080c14',
+              950: '#04070d',
             }
           }
         }
@@ -68,71 +50,89 @@
   </script>
 
   <style>
-    /* Custom sleek scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #090d16; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    /* Sleek minimal scrollbars */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #080c14; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: #334155; }
     [v-cloak] { display: none !important; }
   </style>
 </head>
-<body class="bg-surface-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-cyan-500 selection:text-black relative overflow-x-hidden">
+<body class="bg-surface-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-200">
 
-  <!-- Ambient Background Glow Orbs -->
-  <div class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-cyan-600/15 rounded-full blur-[140px] pointer-events-none"></div>
-  <div class="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-600/15 rounded-full blur-[160px] pointer-events-none"></div>
-  <div class="fixed top-[40%] right-[25%] w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[150px] pointer-events-none"></div>
+  <!-- Subtle Ambient Glows -->
+  <div class="fixed top-0 left-1/4 w-[600px] h-[350px] bg-cyan-600/[0.04] rounded-full blur-[160px] pointer-events-none"></div>
+  <div class="fixed top-1/3 right-1/4 w-[500px] h-[400px] bg-indigo-600/[0.04] rounded-full blur-[180px] pointer-events-none"></div>
 
   <!-- VUE 3 APPLICATION ROOT -->
   <div id="app" v-cloak class="relative z-10 flex flex-col min-h-screen">
 
-    <!-- Premium Floating Navbar -->
-    <header class="sticky top-0 z-40 backdrop-blur-2xl bg-surface-900/80 border-b border-white/[0.06] px-6 py-4 transition">
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 backdrop-blur-xl bg-surface-900/85 border-b border-slate-800/80 px-6 py-3.5 transition">
       <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
         
-        <!-- Brand Identity -->
-        <div class="flex items-center space-x-3.5">
-          <div class="relative group">
-            <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-cyan-500/25 group-hover:scale-105 transition-transform duration-300">
-              <i class="fa-solid fa-bolt-lightning text-white text-lg"></i>
+        <!-- Brand & Nav Links -->
+        <div class="flex items-center space-x-6">
+          <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-md shadow-cyan-500/10">
+              <i class="fa-solid fa-chart-line text-white text-sm"></i>
             </div>
-            <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-surface-950 rounded-full animate-pulse"></span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-base font-bold tracking-tight text-white">Bot Buddy</span>
+                <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-semibold border border-slate-700/60 font-mono">v2.4</span>
+              </div>
+              <p class="text-[11px] text-slate-400 font-medium">Social Performance & Campaign Studio</p>
+            </div>
           </div>
 
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-100 to-cyan-300 bg-clip-text text-transparent">Bot Buddy</span>
-              <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 font-bold border border-cyan-500/30">Vue.js Edition</span>
-            </div>
-            <p class="text-[11px] text-slate-400 font-medium">Facebook & Reels Organic View Engine • Anti-Bot Evasion</p>
-          </div>
+          <!-- Secondary Navigation Tabs -->
+          <nav class="hidden md:flex items-center space-x-1 pl-4 border-l border-slate-800 text-xs font-medium">
+            <button @click="scrollToSection('planner-section')" class="px-3 py-1.5 rounded-lg text-white bg-surface-800/80 border border-slate-700/60 transition">
+              Campaign Planner
+            </button>
+            <button @click="scrollToSection('analytics-section')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">
+              Analytics
+            </button>
+            <button @click="scrollToSection('history-section')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">
+              Campaign History
+            </button>
+            <button @click="showGatewayModal = true" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+              <span>Edge Network</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            </button>
+          </nav>
         </div>
 
-        <!-- System Pill Indicators -->
-        <div class="flex items-center space-x-2.5 text-xs">
+        <!-- System Status & Controls -->
+        <div class="flex items-center space-x-3 text-xs">
           
-          <!-- Unique Device Matrix Badge -->
-          <div class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-surface-800/80 border border-slate-700/60 shadow-inner">
-            <i class="fa-solid fa-mobile-screen-button text-cyan-400 text-sm"></i>
-            <span class="text-slate-400 text-[11px]">Device Pool:</span>
-            <strong class="text-white font-mono font-bold">{{ poolSize }} Unique Profiles</strong>
+          <!-- TiDB Cloud Serverless Indicator -->
+          <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-850 border border-slate-800 text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span class="text-slate-400 text-[11px]">Database:</span>
+            <span class="font-medium text-white">TiDB Serverless</span>
           </div>
 
-          <!-- Stealth Evasion Active -->
-          <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-semibold shadow-sm">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            <i class="fa-solid fa-shield-halved"></i>
-            <span class="hidden md:inline">100% Stealth Active</span>
-          </div>
+          <!-- Gateway Nodes Button -->
+          <button 
+            type="button" 
+            @click="showGatewayModal = true" 
+            class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-850 hover:bg-surface-800 border border-slate-800 text-slate-300 transition"
+            title="Configure Edge Routing Gateway"
+          >
+            <i class="fa-solid fa-server text-cyan-400 text-xs"></i>
+            <span class="hidden md:inline text-slate-400 text-[11px]">Edge Pool:</span>
+            <strong class="font-mono text-white">{{ proxyStats.total_available }} Nodes</strong>
+          </button>
 
-          <!-- TiDB Cloud Serverless -->
-          <div class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-semibold">
-            <i class="fa-solid fa-cloud text-xs"></i>
-            <span>TiDB Cloud</span>
-          </div>
-
-          <!-- Refresh History Button -->
-          <button @click="loadOrders" :disabled="isLoadingHistory" class="p-2 rounded-xl border border-slate-800 bg-surface-800/60 hover:bg-slate-700 text-slate-300 transition" title="Refresh Database Logs">
+          <!-- Refresh Data Button -->
+          <button 
+            @click="loadOrders" 
+            :disabled="isLoadingHistory" 
+            class="p-2 rounded-xl border border-slate-800 bg-surface-850 hover:bg-surface-800 text-slate-300 transition" 
+            title="Refresh Analytics & Records"
+          >
             <i class="fa-solid fa-arrows-rotate text-xs" :class="{ 'fa-spin': isLoadingHistory }"></i>
           </button>
         </div>
@@ -140,530 +140,851 @@
       </div>
     </header>
 
-    <!-- Main Studio Body -->
+    <!-- Main Content Body -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-6 md:p-8 space-y-8">
 
-      <!-- Top Metric Cards Grid -->
+      <!-- Page Introduction -->
+      <section class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+            Content Performance & Campaign Studio
+          </h1>
+          <p class="text-xs md:text-sm text-slate-400 mt-1 max-w-2xl leading-relaxed">
+            Plan high-retention Facebook campaigns, monitor organic reach velocity, and track verified video watch-time retention synced to distributed cloud infrastructure.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2 self-start sm:self-auto">
+          <button 
+            type="button" 
+            @click="scrollToSection('planner-section')"
+            class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-xs tracking-wide transition flex items-center gap-2 shadow-sm"
+          >
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span>New Campaign</span>
+          </button>
+          
+          <button 
+            type="button" 
+            @click="loadOrders" 
+            class="px-3.5 py-2 rounded-xl bg-surface-850 hover:bg-surface-800 border border-slate-800 text-slate-300 text-xs font-medium transition flex items-center gap-2"
+          >
+            <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+            <span>Sync History</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- KPI Performance Metric Cards (4 Cards) -->
       <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        <!-- Card 1: Total Verified Views -->
-        <div class="relative overflow-hidden rounded-2xl p-5 bg-gradient-to-b from-surface-850 to-surface-900 border border-white/[0.07] hover:border-cyan-500/40 transition-all duration-300 group shadow-lg">
+        <!-- Card 1: Total Content Impressions -->
+        <div class="rounded-2xl p-5 bg-surface-850/80 border border-slate-800/80 hover:border-slate-700 transition duration-200">
           <div class="flex items-center justify-between">
-            <span class="text-xs uppercase tracking-wider font-bold text-slate-400">Total Views Boosted</span>
-            <div class="w-9 h-9 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center border border-cyan-500/20 group-hover:scale-110 transition">
-              <i class="fa-solid fa-circle-play text-sm"></i>
+            <span class="text-xs font-semibold text-slate-400 tracking-wider uppercase">Total Impressions</span>
+            <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+              <i class="fa-solid fa-eye text-xs"></i>
             </div>
           </div>
-          <div class="text-3xl font-extrabold mt-3 text-white font-mono tracking-tight flex items-baseline gap-2">
-            <span>{{ totalDeliveredViews }}</span>
-            <span class="text-xs text-emerald-400 font-semibold font-sans"><i class="fa-solid fa-arrow-trend-up"></i> Verified</span>
+          <div class="text-3xl font-bold mt-3 text-white font-mono tracking-tight">
+            {{ formatNumber(totalDeliveredViews) }}
           </div>
-          <div class="text-[11px] text-slate-500 mt-1">Live recorded in TiDB Cloud Serverless</div>
+          <div class="text-[11px] text-slate-500 mt-1 flex items-center gap-1.5">
+            <span class="text-emerald-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-check"></i> Verified</span>
+            <span>recorded in TiDB Cloud</span>
+          </div>
         </div>
 
-        <!-- Card 2: 695 Unique Device Profiles -->
-        <div class="relative overflow-hidden rounded-2xl p-5 bg-gradient-to-b from-surface-850 to-surface-900 border border-white/[0.07] hover:border-indigo-500/40 transition-all duration-300 group shadow-lg">
+        <!-- Card 2: Average Retention Duration -->
+        <div class="rounded-2xl p-5 bg-surface-850/80 border border-slate-800/80 hover:border-slate-700 transition duration-200">
           <div class="flex items-center justify-between">
-            <span class="text-xs uppercase tracking-wider font-bold text-slate-400">Zero-Duplication Pool</span>
-            <div class="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20 group-hover:scale-110 transition">
-              <i class="fa-solid fa-fingerprint text-sm"></i>
+            <span class="text-xs font-semibold text-slate-400 tracking-wider uppercase">Avg Watch Retention</span>
+            <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+              <i class="fa-solid fa-stopwatch text-xs"></i>
             </div>
           </div>
-          <div class="text-3xl font-extrabold mt-3 text-indigo-300 font-mono tracking-tight">
-            {{ poolSize }} Devices
+          <div class="text-3xl font-bold mt-3 text-white font-mono tracking-tight">
+            {{ averageRetentionSeconds }}s
           </div>
-          <div class="text-[11px] text-slate-500 mt-1">iPhone 16, S24 Ultra, Pixel 9, Mac M3</div>
+          <div class="text-[11px] text-slate-500 mt-1">
+            Targeted dwell playback per session
+          </div>
         </div>
 
-        <!-- Card 3: Deep Dwell Watch Time -->
-        <div class="relative overflow-hidden rounded-2xl p-5 bg-gradient-to-b from-surface-850 to-surface-900 border border-white/[0.07] hover:border-emerald-500/40 transition-all duration-300 group shadow-lg">
+        <!-- Card 3: Delivery Fulfillment Rate -->
+        <div class="rounded-2xl p-5 bg-surface-850/80 border border-slate-800/80 hover:border-slate-700 transition duration-200">
           <div class="flex items-center justify-between">
-            <span class="text-xs uppercase tracking-wider font-bold text-slate-400">Max Watch-Time</span>
-            <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition">
-              <i class="fa-solid fa-stopwatch text-sm"></i>
+            <span class="text-xs font-semibold text-slate-400 tracking-wider uppercase">Fulfillment Index</span>
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+              <i class="fa-solid fa-chart-pie text-xs"></i>
             </div>
           </div>
-          <div class="text-3xl font-extrabold mt-3 text-emerald-300 font-mono tracking-tight">
-            Up to 60s
+          <div class="text-3xl font-bold mt-3 text-white font-mono tracking-tight">
+            {{ completionRatePercent }}%
           </div>
-          <div class="text-[11px] text-slate-500 mt-1">1-Min Deep Retention for Meta Explore Feed</div>
+          <div class="text-[11px] text-slate-500 mt-1">
+            Completed campaign fulfillment rate
+          </div>
         </div>
 
-        <!-- Card 4: Anti-Bot Evasion Status -->
-        <div class="relative overflow-hidden rounded-2xl p-5 bg-gradient-to-b from-surface-850 to-surface-900 border border-white/[0.07] hover:border-purple-500/40 transition-all duration-300 group shadow-lg">
+        <!-- Card 4: Tracked Content Campaigns -->
+        <div class="rounded-2xl p-5 bg-surface-850/80 border border-slate-800/80 hover:border-slate-700 transition duration-200">
           <div class="flex items-center justify-between">
-            <span class="text-xs uppercase tracking-wider font-bold text-slate-400">Anti-Bot Evasion</span>
-            <div class="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20 group-hover:scale-110 transition">
-              <i class="fa-solid fa-user-secret text-sm"></i>
+            <span class="text-xs font-semibold text-slate-400 tracking-wider uppercase">Active Content Assets</span>
+            <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
+              <i class="fa-solid fa-layer-group text-xs"></i>
             </div>
           </div>
-          <div class="text-3xl font-extrabold mt-3 text-purple-300 tracking-tight flex items-center gap-2">
-            <span>Undetected</span>
-            <i class="fa-solid fa-badge-check text-emerald-400 text-base"></i>
+          <div class="text-3xl font-bold mt-3 text-white font-mono tracking-tight">
+            {{ activeCampaignsCount }}
           </div>
-          <div class="text-[11px] text-slate-500 mt-1">navigator.webdriver = undefined • WebGL Spoofed</div>
+          <div class="text-[11px] text-slate-500 mt-1">
+            Reel & Video assets in database
+          </div>
         </div>
 
       </section>
 
-      <!-- Main Campaign Studio Panel -->
-      <section class="rounded-3xl p-6 md:p-8 bg-surface-900/90 border border-white/[0.08] shadow-2xl relative overflow-hidden backdrop-blur-xl">
-        
-        <!-- Header & Anti-Bot Badges -->
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-slate-800/80">
+      <!-- Analytics Visualization (Performance Over Time Chart) -->
+      <section id="analytics-section" class="rounded-2xl p-6 bg-surface-850/80 border border-slate-800/80 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-800/60">
           <div>
-            <div class="flex items-center gap-2.5">
-              <span class="px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 text-xs font-bold border border-cyan-500/20 flex items-center gap-1.5">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Facebook Algorithm Optimizer
-              </span>
-              <span class="text-xs text-slate-400 font-mono">0 Login / 0 Cookie Required</span>
-            </div>
-            <h2 class="text-xl md:text-2xl font-black text-white mt-2 tracking-tight">
-              Launch High-Retention View & Reach Campaign
+            <h2 class="text-sm font-bold text-white tracking-wide uppercase flex items-center gap-2">
+              <i class="fa-solid fa-chart-area text-cyan-400"></i> Impression Distribution & Delivery Trend
             </h2>
-            <p class="text-xs text-slate-400 mt-1 max-w-3xl leading-relaxed">
-              Meta EdgeRank algorithm-ke trigger korar jonno protita view-e <strong>alada device hardware profile</strong>, <strong>genuine video streaming</strong> (10s theke 60s), ebong <strong>Google/FB App referrers</strong> inject kora hoy jaate Reel-ti Explore Feed-e viral hoy!
-            </p>
+            <p class="text-xs text-slate-400 mt-0.5">Historical impressions delivered across campaigns over time</p>
           </div>
 
-          <!-- Stealth Guarantee Badges -->
-          <div class="flex flex-wrap lg:flex-col items-start gap-1.5">
-            <span class="text-[10px] px-2.5 py-1 rounded-lg bg-surface-800 border border-slate-700/60 text-slate-300 font-mono flex items-center gap-1.5 shadow-sm">
-              <i class="fa-solid fa-check text-emerald-400"></i> navigator.webdriver = undefined
+          <div class="flex items-center space-x-1.5 text-xs">
+            <button 
+              type="button" 
+              @click="activeChartPeriod = '7d'" 
+              class="px-2.5 py-1 rounded-lg transition"
+              :class="activeChartPeriod === '7d' ? 'bg-surface-700 text-white font-semibold' : 'text-slate-400 hover:text-white'"
+            >
+              7D
+            </button>
+            <button 
+              type="button" 
+              @click="activeChartPeriod = '30d'" 
+              class="px-2.5 py-1 rounded-lg transition"
+              :class="activeChartPeriod === '30d' ? 'bg-surface-700 text-white font-semibold' : 'text-slate-400 hover:text-white'"
+            >
+              30D
+            </button>
+            <button 
+              type="button" 
+              @click="activeChartPeriod = 'all'" 
+              class="px-2.5 py-1 rounded-lg transition"
+              :class="activeChartPeriod === 'all' ? 'bg-surface-700 text-white font-semibold' : 'text-slate-400 hover:text-white'"
+            >
+              All Time
+            </button>
+          </div>
+        </div>
+
+        <!-- SVG Line & Area Chart Container (High-Resolution Linear/Stripe Style) -->
+        <div class="relative w-full h-64 sm:h-72 pt-3">
+          <svg class="w-full h-full overflow-visible" viewBox="0 0 1000 240">
+            <defs>
+              <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.22" />
+                <stop offset="60%" stop-color="#06b6d4" stop-opacity="0.05" />
+                <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.0" />
+              </linearGradient>
+              <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#22d3ee" />
+                <stop offset="100%" stop-color="#818cf8" />
+              </linearGradient>
+            </defs>
+
+            <!-- Horizontal Y-Axis Grid Lines & Tick Labels -->
+            <g v-for="tick in chartData.yTicks" :key="tick.label">
+              <text x="35" :y="tick.y + 4" fill="#64748b" font-size="10" font-family="monospace" text-anchor="end">{{ tick.label }}</text>
+              <line x1="45" :y1="tick.y" x2="970" :y2="tick.y" stroke="#1e293b" stroke-dasharray="3,3" stroke-width="0.8" />
+            </g>
+
+            <!-- Smooth Bezier Area Fill -->
+            <path :d="chartData.areaPath" fill="url(#areaGradient)" />
+
+            <!-- Smooth Bezier Line -->
+            <path 
+              :d="chartData.curvePath" 
+              fill="none" 
+              stroke="url(#lineGradient)" 
+              stroke-width="3" 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+            />
+
+            <!-- Plot Dots with Hover Glow -->
+            <g v-for="p in chartData.points" :key="p.label" class="cursor-pointer group">
+              <!-- Vertical guideline -->
+              <line :x1="p.x" :y1="p.y" :x2="p.x" y2="200" stroke="#334155" stroke-dasharray="2,2" stroke-width="0.8" opacity="0.6" />
+              <!-- Outer pulse ring -->
+              <circle :cx="p.x" :cy="p.y" r="6" fill="#06b6d4" opacity="0.2" class="group-hover:opacity-40 transition" />
+              <!-- Center solid dot -->
+              <circle :cx="p.x" :cy="p.y" r="3.5" fill="#080c14" stroke="#22d3ee" stroke-width="2.5" />
+              <!-- Hover Value Tooltip Text -->
+              <text :x="p.x" :y="p.y - 12" fill="#e2e8f0" font-size="11" font-weight="bold" font-family="monospace" text-anchor="middle" class="opacity-0 group-hover:opacity-100 transition duration-150">
+                {{ p.val }}
+              </text>
+            </g>
+          </svg>
+
+          <!-- X-Axis Labels -->
+          <div class="flex justify-between text-[11px] text-slate-400 font-mono mt-2 pl-12 pr-6">
+            <span v-for="p in chartData.points" :key="p.label">{{ p.label }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Workspace: Campaign Planner & Configuration -->
+      <section id="planner-section" class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        
+        <!-- Left: Configuration Form (2 Columns wide) -->
+        <div class="lg:col-span-2 rounded-2xl p-6 bg-surface-850/80 border border-slate-800/80 space-y-6">
+          <div class="pb-4 border-b border-slate-800/60 flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-bold text-white tracking-tight">Campaign Planner</h2>
+              <p class="text-xs text-slate-400 mt-0.5">Configure target asset, retention goals, and edge concurrency</p>
+            </div>
+            <span class="text-xs px-2.5 py-1 rounded-lg bg-surface-800 border border-slate-700/60 text-slate-300 font-mono">
+              {{ detectedContentType }}
             </span>
-            <span class="text-[10px] px-2.5 py-1 rounded-lg bg-surface-800 border border-slate-700/60 text-slate-300 font-mono flex items-center gap-1.5 shadow-sm">
-              <i class="fa-solid fa-check text-emerald-400"></i> WebGL GPU & CPU Cores Emulated
-            </span>
-            <span class="text-[10px] px-2.5 py-1 rounded-lg bg-surface-800 border border-slate-700/60 text-slate-300 font-mono flex items-center gap-1.5 shadow-sm">
-              <i class="fa-solid fa-check text-emerald-400"></i> Zero Device Fingerprint Duplication
+          </div>
+
+          <form @submit.prevent="launchCampaign" class="space-y-6">
+            
+            <!-- 1. Content Asset URL -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300">Target Content Asset URL</label>
+                <button type="button" @click="resetToDemoUrl" class="text-[11px] text-cyan-400 hover:underline flex items-center gap-1 font-medium">
+                  <i class="fa-solid fa-link"></i> Sample Harry Potter Reel
+                </button>
+              </div>
+
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">
+                  <i class="fa-brands fa-facebook text-base"></i>
+                </span>
+                <input 
+                  type="url" 
+                  v-model="targetUrl" 
+                  placeholder="https://www.facebook.com/reel/1767246594345288" 
+                  class="w-full bg-surface-900 border border-slate-700/80 rounded-xl pl-10 pr-24 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono transition" 
+                  required 
+                />
+                <button 
+                  type="button" 
+                  @click="copyToClipboard(targetUrl, 'URL')" 
+                  class="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg bg-surface-800 border border-slate-700 text-[11px] text-slate-300 hover:text-white transition flex items-center gap-1"
+                >
+                  <i class="fa-solid fa-copy text-[10px]"></i> Copy
+                </button>
+              </div>
+            </div>
+
+            <!-- 2. Target Impressions Selector -->
+            <div class="space-y-3 pt-1">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300">Impression Target Volume</label>
+                  <p class="text-[11px] text-slate-400">Total verified deliveries planned across unique devices and edge nodes.</p>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                  <button 
+                    type="button" 
+                    @click="setPreset(50, 20)" 
+                    class="px-2.5 py-1 rounded-lg text-xs font-medium transition"
+                    :class="quantity === 50 ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-surface-800 hover:bg-slate-700 text-slate-300 border border-slate-700/60'"
+                  >
+                    50 Goal
+                  </button>
+                  <button 
+                    type="button" 
+                    @click="setPreset(100, 20)" 
+                    class="px-2.5 py-1 rounded-lg text-xs font-medium transition"
+                    :class="quantity === 100 ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-surface-800 hover:bg-slate-700 text-slate-300 border border-slate-700/60'"
+                  >
+                    100
+                  </button>
+                  <button 
+                    type="button" 
+                    @click="setPreset(200, 35)" 
+                    class="px-2.5 py-1 rounded-lg text-xs font-medium transition"
+                    :class="quantity === 200 ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-surface-800 hover:bg-slate-700 text-slate-300 border border-slate-700/60'"
+                  >
+                    200
+                  </button>
+                  <button 
+                    type="button" 
+                    @click="setPreset(500, 60)" 
+                    class="px-2.5 py-1 rounded-lg text-xs font-medium transition"
+                    :class="quantity === 500 ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-surface-800 hover:bg-slate-700 text-slate-300 border border-slate-700/60'"
+                  >
+                    500 Max
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
+                <div class="sm:col-span-3">
+                  <input 
+                    type="range" 
+                    min="2" 
+                    max="500" 
+                    step="1" 
+                    v-model.number="quantity" 
+                    class="w-full accent-cyan-400 cursor-pointer h-1.5 bg-slate-800 rounded-lg appearance-none" 
+                  />
+                  <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-1">
+                    <span>2 Min</span>
+                    <span>50 Goal</span>
+                    <span>100</span>
+                    <span>250</span>
+                    <span>500 Max</span>
+                  </div>
+                </div>
+
+                <div>
+                  <input 
+                    type="number" 
+                    v-model.number="quantity" 
+                    min="2" 
+                    max="500" 
+                    class="w-full bg-surface-900 border border-slate-700/80 rounded-xl px-3 py-2 text-center text-sm font-bold text-white focus:outline-none focus:border-cyan-500 font-mono" 
+                    required 
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Watch Retention Duration & Node Concurrency -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              
+              <!-- Watch Retention Goal -->
+              <div class="space-y-2">
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center justify-between">
+                  <span>Target Dwell Retention</span>
+                  <span class="text-cyan-400 font-mono font-bold">{{ dwellSeconds }}s</span>
+                </label>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <div 
+                    @click="dwellSeconds = 10" 
+                    class="p-2.5 rounded-xl border cursor-pointer transition text-left"
+                    :class="dwellSeconds === 10 ? 'bg-cyan-500/10 border-cyan-500/80 text-white' : 'bg-surface-900 border-slate-800 text-slate-400 hover:border-slate-700'"
+                  >
+                    <div class="font-bold text-xs text-white">10 Seconds</div>
+                    <div class="text-[10px] text-slate-500 mt-0.5">Quick Play (3s+ Pass)</div>
+                  </div>
+
+                  <div 
+                    @click="dwellSeconds = 20" 
+                    class="p-2.5 rounded-xl border cursor-pointer transition text-left relative"
+                    :class="dwellSeconds === 20 ? 'bg-cyan-500/10 border-cyan-500/80 text-white' : 'bg-surface-900 border-slate-800 text-slate-400 hover:border-slate-700'"
+                  >
+                    <span class="absolute -top-1.5 right-1.5 px-1 rounded text-[8px] bg-emerald-500 text-slate-950 font-bold uppercase">Optimal</span>
+                    <div class="font-bold text-xs text-white">20 Seconds</div>
+                    <div class="text-[10px] text-slate-500 mt-0.5">Standard Retention</div>
+                  </div>
+
+                  <div 
+                    @click="dwellSeconds = 35" 
+                    class="p-2.5 rounded-xl border cursor-pointer transition text-left"
+                    :class="dwellSeconds === 35 ? 'bg-cyan-500/10 border-cyan-500/80 text-white' : 'bg-surface-900 border-slate-800 text-slate-400 hover:border-slate-700'"
+                  >
+                    <div class="font-bold text-xs text-white">35 Seconds</div>
+                    <div class="text-[10px] text-slate-500 mt-0.5">Deep Engagement</div>
+                  </div>
+
+                  <div 
+                    @click="dwellSeconds = 60" 
+                    class="p-2.5 rounded-xl border cursor-pointer transition text-left"
+                    :class="dwellSeconds === 60 ? 'bg-cyan-500/10 border-cyan-500/80 text-white' : 'bg-surface-900 border-slate-800 text-slate-400 hover:border-slate-700'"
+                  >
+                    <div class="font-bold text-xs text-white">60 Seconds</div>
+                    <div class="text-[10px] text-slate-500 mt-0.5">Full 1-Min Playback</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Concurrency Workers -->
+              <div class="space-y-2">
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center justify-between">
+                  <span>Distribution Workers</span>
+                  <span class="text-indigo-400 font-mono font-bold">{{ concurrency }} Nodes</span>
+                </label>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <div 
+                    @click="concurrency = 2" 
+                    class="p-2.5 rounded-xl border cursor-pointer transition text-left"
+                    :class="concurrency === 2 ? 'bg-indigo-500/10 border-indigo-500/80 text-white' : 'bg-surface-900 border-slate-800 text-slate-400 hover:border-slate-700'"
+                  >
+                    <div class="font-bold text-xs text-white">2 Nodes</div>
+                    <div class="text-[10px] text-slate-500 mt-0.5">Low Bandwidth</div>
+                  </div>
+
+                  <div 
+                    @click="concurrency = 4" 
+                    class="p-2.5 rounded-xl border cursor-pointer transition text-left"
+                    :class="concurrency === 4 ? 'bg-indigo-500/10 border-indigo-500/80 text-white' : 'bg-surface-900 border-slate-800 text-slate-400 hover:border-slate-700'"
+                  >
+                    <div class="font-bold text-xs text-white">4 Nodes</div>
+                    <div class="text-[10px] text-slate-500 mt-0.5">Balanced Speed</div>
+                  </div>
+
+                  <div 
+                    @click="concurrency = 6" 
+                    class="p-2.5 rounded-xl border cursor-pointer transition text-left"
+                    :class="concurrency === 6 ? 'bg-indigo-500/10 border-indigo-500/80 text-white' : 'bg-surface-900 border-slate-800 text-slate-400 hover:border-slate-700'"
+                  >
+                    <div class="font-bold text-xs text-white">6 Nodes</div>
+                    <div class="text-[10px] text-slate-500 mt-0.5">High Throughput</div>
+                  </div>
+
+                  <div 
+                    @click="concurrency = 10" 
+                    class="p-2.5 rounded-xl border cursor-pointer transition text-left relative"
+                    :class="concurrency === 10 ? 'bg-indigo-500/10 border-indigo-500/80 text-white' : 'bg-surface-900 border-slate-800 text-slate-400 hover:border-slate-700'"
+                  >
+                    <span class="absolute -top-1.5 right-1.5 px-1 rounded text-[8px] bg-indigo-500 text-white font-bold uppercase">Turbo</span>
+                    <div class="font-bold text-xs text-white">10 Nodes</div>
+                    <div class="text-[10px] text-slate-500 mt-0.5">Max Velocity</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- 4. Network Gateway Preference Row -->
+            <div class="p-3.5 rounded-xl bg-surface-900 border border-slate-800 flex items-center justify-between text-xs">
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-globe text-slate-400 text-sm"></i>
+                <div>
+                  <span class="text-white font-medium">Distributed Edge Gateway:</span>
+                  <span class="text-slate-400 font-mono ml-1">{{ proxyMode.toUpperCase() }} ({{ proxyStats.total_available }} Active Endpoints)</span>
+                </div>
+              </div>
+              <button 
+                type="button" 
+                @click="showGatewayModal = true" 
+                class="text-xs text-cyan-400 hover:underline font-medium"
+              >
+                Configure Gateway
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Right: Campaign Summary Card & Execution (1 Column wide) -->
+        <div class="rounded-2xl p-6 bg-surface-850/80 border border-slate-800/80 space-y-5 sticky top-20">
+          <div>
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Campaign Overview</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Review parameters before initiating deployment</p>
+          </div>
+
+          <div class="space-y-3 divide-y divide-slate-800/70 text-xs font-mono">
+            
+            <div class="pt-2 flex items-center justify-between">
+              <span class="text-slate-400 font-sans">Target Asset:</span>
+              <span class="text-slate-200 truncate max-w-[150px]" :title="targetUrl">{{ detectedContentType }}</span>
+            </div>
+
+            <div class="pt-3 flex items-center justify-between">
+              <span class="text-slate-400 font-sans">Impression Volume:</span>
+              <span class="text-white font-bold">{{ quantity }} Impressions</span>
+            </div>
+
+            <div class="pt-3 flex items-center justify-between">
+              <span class="text-slate-400 font-sans">Target Watch-Time:</span>
+              <span class="text-emerald-400 font-bold">{{ dwellSeconds }}s per view</span>
+            </div>
+
+            <div class="pt-3 flex items-center justify-between">
+              <span class="text-slate-400 font-sans">Estimated Total Watch:</span>
+              <span class="text-white">{{ formatDuration(totalEstimatedWatchSeconds) }}</span>
+            </div>
+
+            <div class="pt-3 flex items-center justify-between">
+              <span class="text-slate-400 font-sans">Parallel Concurrency:</span>
+              <span class="text-indigo-300 font-bold">{{ concurrency }} Workers</span>
+            </div>
+
+            <div class="pt-3 flex items-center justify-between">
+              <span class="text-slate-400 font-sans">Estimated Time:</span>
+              <span class="text-cyan-300 font-bold">{{ estimatedTimeRemaining }}</span>
+            </div>
+
+            <div class="pt-3 flex items-center justify-between">
+              <span class="text-slate-400 font-sans">Cloud Persistence:</span>
+              <span class="text-slate-300">TiDB Serverless</span>
+            </div>
+
+          </div>
+
+          <div class="pt-2 space-y-2">
+            <button 
+              type="button" 
+              @click="launchCampaign" 
+              :disabled="isRunning" 
+              class="w-full py-3 rounded-xl font-bold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2"
+              :class="isRunning 
+                ? 'bg-surface-700 text-slate-400 cursor-not-allowed' 
+                : 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-md shadow-cyan-500/10 active:scale-[0.99]'"
+            >
+              <i v-if="isRunning" class="fa-solid fa-spinner fa-spin text-sm"></i>
+              <i v-else class="fa-solid fa-play text-xs"></i>
+              <span>{{ isRunning ? 'Fulfilling Campaign...' : `Launch ${quantity} Impressions` }}</span>
+            </button>
+
+            <div class="text-[11px] text-slate-500 text-center">
+              Verified retention stream • Zero platform login required
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Live Campaign Progress & Real-Time Stream Console -->
+      <section v-if="logs.length > 0 || isRunning" class="rounded-2xl p-6 bg-surface-850/80 border border-slate-800/80 space-y-4">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+          <div>
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full" :class="isRunning ? 'bg-cyan-400 animate-pulse' : 'bg-emerald-400'"></span>
+              <span>{{ isRunning ? 'Real-Time Delivery Feed in Progress' : 'Campaign Execution Log' }}</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">Stream of verified impressions and playback duration per session</p>
+          </div>
+
+          <div class="flex items-center gap-2 font-mono text-xs">
+            <span class="px-3 py-1 rounded-lg border"
+              :class="progressPercent === 100 
+                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+                : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'">
+              {{ currentDelivered }} / {{ currentTotal }} Delivered ({{ progressPercent }}%)
             </span>
           </div>
         </div>
 
-        <!-- Vue Reactive Form -->
-        <form @submit.prevent="launchCampaign" class="mt-6 space-y-6">
-          
-          <!-- 1. Target URL Input -->
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">Target Facebook Reel / Video / Post URL</label>
-              <div class="flex items-center gap-2">
-                <button type="button" @click="resetToReelUrl" class="text-[11px] text-cyan-400 hover:underline flex items-center gap-1 font-medium">
-                  <i class="fa-solid fa-film"></i> Load Harry Potter Reel (22 Views)
-                </button>
-              </div>
-            </div>
+        <!-- Progress Bar -->
+        <div class="w-full bg-surface-900 rounded-full h-2 overflow-hidden border border-slate-800">
+          <div 
+            class="h-full rounded-full transition-all duration-300 bg-cyan-500"
+            :style="{ width: `${progressPercent}%` }"
+          ></div>
+        </div>
 
-            <div class="relative group">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-500 group-focus-within:text-cyan-400 transition">
-                <i class="fa-brands fa-facebook text-lg"></i>
-              </span>
-              <input 
-                type="url" 
-                v-model="targetUrl" 
-                placeholder="https://www.facebook.com/reel/1767246594345288" 
-                class="w-full bg-surface-800/90 border border-slate-700 rounded-2xl pl-12 pr-28 py-3.5 text-xs md:text-sm text-white focus:outline-none focus:border-cyan-500 font-mono shadow-inner transition placeholder:text-slate-600" 
-                required 
-              />
-              <button 
-                type="button" 
-                @click="copyUrl" 
-                class="absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-xl bg-surface-900 border border-slate-700 hover:border-slate-600 text-xs text-slate-300 hover:text-white transition flex items-center gap-1.5"
-              >
-                <i class="fa-solid fa-copy text-[11px]"></i> Copy
-              </button>
-            </div>
-          </div>
-
-          <!-- 2. Quantity Selector & Presets -->
-          <div class="bg-surface-850/60 p-5 rounded-2xl border border-white/[0.04] space-y-3">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">Quantity of Real Views (Unique Devices)</label>
-                <p class="text-[11px] text-slate-400 mt-0.5">Every single view is delivered by a <strong>distinct device profile</strong> from our 695 pool.</p>
-              </div>
-              
-              <!-- Quick Preset Chips -->
-              <div class="flex flex-wrap items-center gap-1.5">
-                <button 
-                  type="button" 
-                  @click="setPreset(50, 20)" 
-                  class="px-3 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
-                  :class="quantity === 50 ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-500/30' : 'bg-surface-800 hover:bg-slate-700 text-slate-300 border border-slate-700'"
-                >
-                  <i class="fa-solid fa-star text-[10px]"></i> 50 Views (User Goal)
-                </button>
-                <button 
-                  type="button" 
-                  @click="setPreset(100, 20)" 
-                  class="px-3 py-1 rounded-xl text-xs font-medium transition"
-                  :class="quantity === 100 ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-500/30' : 'bg-surface-800 hover:bg-slate-700 text-slate-300 border border-slate-700'"
-                >
-                  100 Views
-                </button>
-                <button 
-                  type="button" 
-                  @click="setPreset(200, 35)" 
-                  class="px-3 py-1 rounded-xl text-xs font-medium transition"
-                  :class="quantity === 200 ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-500/30' : 'bg-surface-800 hover:bg-slate-700 text-slate-300 border border-slate-700'"
-                >
-                  200 Views
-                </button>
-                <button 
-                  type="button" 
-                  @click="setPreset(500, 60)" 
-                  class="px-3 py-1 rounded-xl text-xs font-medium transition"
-                  :class="quantity === 500 ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-500/30' : 'bg-surface-800 hover:bg-slate-700 text-slate-300 border border-slate-700'"
-                >
-                  500 Max
-                </button>
-              </div>
-            </div>
-
-            <!-- Slider + Number Input -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center pt-1">
-              <div class="md:col-span-3">
-                <input 
-                  type="range" 
-                  min="2" 
-                  max="500" 
-                  step="1" 
-                  v-model.number="quantity" 
-                  class="w-full accent-cyan-400 cursor-pointer h-2 bg-slate-800 rounded-lg appearance-none" 
-                />
-                <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-1">
-                  <span>2 Views</span>
-                  <span>50 Goal</span>
-                  <span>100</span>
-                  <span>250</span>
-                  <span>500 Max</span>
-                </div>
-              </div>
-
-              <div>
-                <input 
-                  type="number" 
-                  v-model.number="quantity" 
-                  min="2" 
-                  max="500" 
-                  class="w-full bg-surface-800 border border-slate-700 rounded-xl px-4 py-2.5 text-center text-sm font-bold text-white focus:outline-none focus:border-cyan-500 font-mono" 
-                  required 
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- 3. Duration & Concurrency Cards -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            <!-- Dwell Watch Duration (Up to 1 Minute) -->
-            <div class="bg-surface-850/60 p-5 rounded-2xl border border-white/[0.04] space-y-3">
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center justify-between">
-                <span><i class="fa-solid fa-stopwatch text-emerald-400 mr-1.5"></i> Watch-Time / Dwell Retention</span>
-                <span class="text-emerald-400 font-mono text-xs font-bold">{{ dwellSeconds }}s Selected</span>
-              </label>
-
-              <div class="grid grid-cols-2 gap-2">
-                <div 
-                  @click="dwellSeconds = 10" 
-                  class="p-3 rounded-xl border cursor-pointer transition flex flex-col justify-between"
-                  :class="dwellSeconds === 10 ? 'bg-cyan-500/15 border-cyan-500 text-white shadow-sm' : 'bg-surface-800/80 border-slate-700/70 text-slate-400 hover:border-slate-600'"
-                >
-                  <div class="font-bold text-xs text-white">10 Seconds</div>
-                  <div class="text-[10px] mt-1 text-slate-400">Fast Video Play (Meta 3s+ Passed)</div>
-                </div>
-
-                <div 
-                  @click="dwellSeconds = 20" 
-                  class="p-3 rounded-xl border cursor-pointer transition flex flex-col justify-between relative"
-                  :class="dwellSeconds === 20 ? 'bg-cyan-500/15 border-cyan-500 text-white shadow-sm' : 'bg-surface-800/80 border-slate-700/70 text-slate-400 hover:border-slate-600'"
-                >
-                  <span class="absolute -top-2 right-2 px-1.5 py-0.2 rounded text-[9px] bg-emerald-500 text-black font-extrabold">BEST</span>
-                  <div class="font-bold text-xs text-white">20 Seconds</div>
-                  <div class="text-[10px] mt-1 text-slate-400">High Retention Reel Watch</div>
-                </div>
-
-                <div 
-                  @click="dwellSeconds = 35" 
-                  class="p-3 rounded-xl border cursor-pointer transition flex flex-col justify-between"
-                  :class="dwellSeconds === 35 ? 'bg-cyan-500/15 border-cyan-500 text-white shadow-sm' : 'bg-surface-800/80 border-slate-700/70 text-slate-400 hover:border-slate-600'"
-                >
-                  <div class="font-bold text-xs text-white">35 Seconds</div>
-                  <div class="text-[10px] mt-1 text-slate-400">Deep Algorithmic Exploration</div>
-                </div>
-
-                <div 
-                  @click="dwellSeconds = 60" 
-                  class="p-3 rounded-xl border cursor-pointer transition flex flex-col justify-between relative"
-                  :class="dwellSeconds === 60 ? 'bg-cyan-500/15 border-cyan-500 text-white shadow-sm' : 'bg-surface-800/80 border-slate-700/70 text-slate-400 hover:border-slate-600'"
-                >
-                  <span class="absolute -top-2 right-2 px-1.5 py-0.2 rounded text-[9px] bg-purple-500 text-white font-extrabold">1 MIN</span>
-                  <div class="font-bold text-xs text-white">60 Seconds</div>
-                  <div class="text-[10px] mt-1 text-slate-400">Full 1-Min Watch (Max Reach)</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Concurrency & Speed Control -->
-            <div class="bg-surface-850/60 p-5 rounded-2xl border border-white/[0.04] space-y-3">
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center justify-between">
-                <span><i class="fa-solid fa-microchip text-indigo-400 mr-1.5"></i> Parallel Stealth Workers</span>
-                <span class="text-indigo-400 font-mono text-xs font-bold">{{ concurrency }} Browsers</span>
-              </label>
-
-              <div class="grid grid-cols-3 gap-2">
-                <div 
-                  @click="concurrency = 2" 
-                  class="p-3 rounded-xl border cursor-pointer transition text-center"
-                  :class="concurrency === 2 ? 'bg-indigo-500/20 border-indigo-500 text-white shadow-sm' : 'bg-surface-800/80 border-slate-700/70 text-slate-400 hover:border-slate-600'"
-                >
-                  <div class="font-bold text-xs text-white">2 Workers</div>
-                  <div class="text-[10px] text-slate-400 mt-1">Quiet & Slow</div>
-                </div>
-
-                <div 
-                  @click="concurrency = 4" 
-                  class="p-3 rounded-xl border cursor-pointer transition text-center"
-                  :class="concurrency === 4 ? 'bg-indigo-500/20 border-indigo-500 text-white shadow-sm' : 'bg-surface-800/80 border-slate-700/70 text-slate-400 hover:border-slate-600'"
-                >
-                  <div class="font-bold text-xs text-white">4 Workers</div>
-                  <div class="text-[10px] text-emerald-400 mt-1">Optimal Speed</div>
-                </div>
-
-                <div 
-                  @click="concurrency = 6" 
-                  class="p-3 rounded-xl border cursor-pointer transition text-center"
-                  :class="concurrency === 6 ? 'bg-indigo-500/20 border-indigo-500 text-white shadow-sm' : 'bg-surface-800/80 border-slate-700/70 text-slate-400 hover:border-slate-600'"
-                >
-                  <div class="font-bold text-xs text-white">6 Workers</div>
-                  <div class="text-[10px] text-cyan-400 mt-1">Turbo Boost</div>
-                </div>
-              </div>
-
-              <div class="text-[11px] text-slate-400 pt-1 flex items-center justify-between">
-                <span>Estimated Completion:</span>
-                <strong class="text-white font-mono">{{ estimatedTimeRemaining }}</strong>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Launch CTA Bar -->
-          <div class="pt-3 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-800/60">
-            <div class="text-xs text-slate-400 flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Ready to deliver <strong>{{ quantity }} real views</strong> across <strong>{{ quantity }} distinct devices</strong></span>
-            </div>
-
+        <!-- Filter Bar & Metrics -->
+        <div class="flex items-center justify-between pt-1 text-xs">
+          <div class="flex items-center gap-1.5">
             <button 
-              type="submit" 
-              :disabled="isRunning" 
-              class="w-full sm:w-auto px-10 py-4 rounded-2xl font-bold text-sm text-white tracking-wide transition-all duration-300 flex items-center justify-center gap-3 shadow-2xl relative overflow-hidden group"
-              :class="isRunning 
-                ? 'bg-slate-800 cursor-not-allowed opacity-80' 
-                : 'bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 hover:from-cyan-400 hover:via-indigo-500 hover:to-purple-500 shadow-cyan-500/30 hover:scale-[1.02]'"
+              @click="activeFilter = 'all'" 
+              class="px-2.5 py-1 rounded-lg transition"
+              :class="activeFilter === 'all' ? 'bg-surface-700 text-white font-medium' : 'text-slate-400 hover:text-white'"
             >
-              <i v-if="isRunning" class="fa-solid fa-spinner fa-spin text-base"></i>
-              <i v-else class="fa-solid fa-play text-base group-hover:translate-x-0.5 transition-transform"></i>
-              <span>{{ isRunning ? 'Delivering Views & Watch-Time...' : `Launch ${quantity} Real Views on Facebook Reel` }}</span>
+              All ({{ logs.length }})
+            </button>
+            <button 
+              @click="activeFilter = 'mobile'" 
+              class="px-2.5 py-1 rounded-lg transition"
+              :class="activeFilter === 'mobile' ? 'bg-surface-700 text-white font-medium' : 'text-slate-400 hover:text-white'"
+            >
+              Mobile ({{ mobileLogsCount }})
+            </button>
+            <button 
+              @click="activeFilter = 'desktop'" 
+              class="px-2.5 py-1 rounded-lg transition"
+              :class="activeFilter === 'desktop' ? 'bg-surface-700 text-white font-medium' : 'text-slate-400 hover:text-white'"
+            >
+              Desktop ({{ desktopLogsCount }})
             </button>
           </div>
 
-        </form>
+          <div class="text-[11px] text-slate-500 font-mono hidden sm:flex items-center gap-3">
+            <span><strong class="text-slate-300">{{ uniqueDevicesUsedCount }}</strong> Distinct Profiles</span>
+            <span>•</span>
+            <span><strong class="text-slate-300">{{ uniqueNodesUsedCount }}</strong> Distinct Edge IPs</span>
+          </div>
+        </div>
 
-        <!-- Live Real-Time Execution Console (Visible when running or completed) -->
-        <div v-if="logs.length > 0 || isRunning" class="mt-8 p-6 rounded-2xl bg-surface-950 border border-slate-800 space-y-4 shadow-inner">
-          
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
-            <div>
-              <h4 class="font-bold text-sm text-white flex items-center gap-2">
-                <i v-if="isRunning" class="fa-solid fa-satellite-dish fa-spin text-cyan-400"></i>
-                <i v-else class="fa-solid fa-circle-check text-emerald-400"></i>
-                <span>{{ isRunning ? 'Active Stealth View Delivery in Progress' : 'Campaign Execution Completed!' }}</span>
-              </h4>
-              <p class="text-xs text-slate-400 mt-0.5">
-                Streaming video playback across unique hardware fingerprints • Synced to TiDB Cloud
-              </p>
-            </div>
-
-            <!-- Live Progress Counter & Percentage -->
+        <!-- Stream Items List -->
+        <div class="space-y-2 max-h-80 overflow-y-auto pr-1">
+          <div 
+            v-for="log in filteredLogs" 
+            :key="log.view_idx"
+            class="p-3 rounded-xl bg-surface-900 border border-slate-800/90 flex items-center justify-between hover:border-slate-700 transition"
+          >
             <div class="flex items-center gap-3">
-              <span class="px-3.5 py-1 rounded-xl text-xs font-bold font-mono border"
-                :class="progressPercent === 100 
-                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                  : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'">
-                {{ currentDelivered }} / {{ currentTotal }} Delivered ({{ progressPercent }}%)
+              <span class="w-6 h-6 rounded-md bg-surface-800 text-slate-300 flex items-center justify-center font-bold font-mono text-[11px]">
+                #{{ log.view_idx }}
               </span>
-            </div>
-          </div>
 
-          <!-- Animated Multi-Stage Progress Bar -->
-          <div class="w-full bg-surface-900 rounded-full h-3 overflow-hidden border border-slate-800/80 p-0.5 relative">
-            <div 
-              class="h-2 rounded-full transition-all duration-300 bg-gradient-to-r from-cyan-500 via-indigo-500 to-emerald-400 shadow-md"
-              :style="{ width: `${progressPercent}%` }"
-            ></div>
-          </div>
+              <div>
+                <div class="font-medium text-white text-xs flex flex-wrap items-center gap-1.5">
+                  <i :class="getPlatformIcon(log.platform)" class="text-xs"></i>
+                  <span>{{ log.device }}</span>
+                  <span class="text-[9px] px-1.5 py-0.2 rounded bg-surface-800 text-slate-400 font-mono">{{ log.viewport }}</span>
+                  <span class="text-[9px] px-2 py-0.5 rounded bg-surface-800 text-slate-300 font-mono">
+                    IP: {{ log.proxy || 'Direct Route' }}
+                  </span>
+                  <span v-if="log.wifi_ip" class="text-[9px] px-2 py-0.5 rounded bg-surface-800 text-slate-400 font-mono">
+                    LAN: {{ log.wifi_ip }}
+                  </span>
+                </div>
 
-          <!-- Filter Tabs for Live Stream -->
-          <div class="flex items-center justify-between pt-2">
-            <div class="flex items-center gap-1.5 text-xs">
-              <button 
-                @click="activeFilter = 'all'" 
-                class="px-3 py-1 rounded-lg font-medium transition"
-                :class="activeFilter === 'all' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40' : 'text-slate-400 hover:text-white'"
-              >
-                All ({{ logs.length }})
-              </button>
-              <button 
-                @click="activeFilter = 'mobile'" 
-                class="px-3 py-1 rounded-lg font-medium transition"
-                :class="activeFilter === 'mobile' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40' : 'text-slate-400 hover:text-white'"
-              >
-                Mobile ({{ mobileLogsCount }})
-              </button>
-              <button 
-                @click="activeFilter = 'desktop'" 
-                class="px-3 py-1 rounded-lg font-medium transition"
-                :class="activeFilter === 'desktop' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40' : 'text-slate-400 hover:text-white'"
-              >
-                Desktop ({{ desktopLogsCount }})
-              </button>
-            </div>
-
-            <div class="text-[11px] text-slate-500 font-mono">
-              <span class="text-emerald-400 font-bold">{{ uniqueDevicesUsedCount }}</span> Unique Devices Engaged
-            </div>
-          </div>
-
-          <!-- Stream of Real-Time View Logs -->
-          <div class="space-y-2 max-h-96 overflow-y-auto pr-1">
-            <div 
-              v-for="log in filteredLogs" 
-              :key="log.view_idx"
-              class="p-3.5 rounded-xl bg-surface-900 border border-slate-800/90 flex items-center justify-between hover:border-slate-700 transition"
-            >
-              <div class="flex items-center gap-3">
-                <span class="w-7 h-7 rounded-lg bg-cyan-500/15 text-cyan-400 flex items-center justify-center font-bold font-mono text-xs shadow-sm">
-                  #{{ log.view_idx }}
-                </span>
-
-                <div>
-                  <div class="font-bold text-white text-xs flex items-center gap-2">
-                    <i :class="getDeviceIcon(log.platform)" class="text-slate-400 text-xs"></i>
-                    <span>{{ log.device }}</span>
-                    <span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 font-mono">{{ log.viewport }}</span>
-                  </div>
-
-                  <div class="text-[11px] text-slate-400 mt-1 flex flex-wrap items-center gap-3">
-                    <span>Referrer: <strong class="text-pink-400 font-sans">{{ log.referrer || 'Direct' }}</strong></span>
-                    <span>Dwell Watch: <strong class="text-emerald-400 font-sans">{{ log.dwell_seconds }}s</strong></span>
-                    <span v-if="log.is_video" class="flex items-center gap-1.5 text-cyan-400 font-medium">
-                      <span class="flex items-end gap-0.5 h-3">
-                        <span class="w-0.5 bg-cyan-400 animate-equalizer-1"></span>
-                        <span class="w-0.5 bg-cyan-400 animate-equalizer-2"></span>
-                        <span class="w-0.5 bg-cyan-400 animate-equalizer-3"></span>
-                      </span>
-                      Video Streamed: <strong>{{ log.video_streamed_sec }}s</strong>
-                    </span>
-                  </div>
+                <div class="text-[11px] text-slate-400 mt-0.5 flex flex-wrap items-center gap-3">
+                  <span>Referrer: <strong class="text-slate-300 font-sans">{{ log.referrer || 'Direct' }}</strong></span>
+                  <span>Target Dwell: <strong class="text-slate-300 font-sans">{{ log.dwell_seconds }}s</strong></span>
+                  <span v-if="log.is_video" class="text-cyan-400 font-medium">
+                    Streamed: <strong>{{ log.video_streamed_sec }}s</strong>
+                  </span>
                 </div>
               </div>
+            </div>
 
-              <div class="text-right">
-                <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold border"
-                  :class="log.status === 'SUCCESS' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'">
-                  {{ log.status === 'SUCCESS' ? 'Verified Impression' : 'Failed' }}
-                </span>
-                <div class="text-[10px] text-slate-500 mt-1 font-mono">{{ log.timestamp }}</div>
-              </div>
+            <div class="text-right">
+              <span class="px-2 py-0.5 rounded text-[10px] font-semibold border"
+                :class="log.status === 'SUCCESS' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'">
+                {{ log.status === 'SUCCESS' ? 'Delivered' : 'Failed' }}
+              </span>
+              <div class="text-[10px] text-slate-500 mt-0.5 font-mono">{{ log.timestamp }}</div>
             </div>
           </div>
-
         </div>
 
       </section>
 
-      <!-- Past Campaigns Audit Log (TiDB Cloud Serverless) -->
-      <section class="rounded-3xl p-6 md:p-8 bg-surface-900/90 border border-white/[0.08] shadow-xl backdrop-blur-xl">
-        <div class="flex items-center justify-between mb-5">
+      <!-- Campaign History & Audit Table (TiDB Cloud) -->
+      <section id="history-section" class="rounded-2xl p-6 bg-surface-850/80 border border-slate-800/80 space-y-4">
+        
+        <!-- Section Header with Search & Filter Controls -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-800">
           <div>
-            <h3 class="font-bold text-white text-base flex items-center gap-2">
-              <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> TiDB Cloud Audit Trail (Past Campaigns)
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> Historical Campaign Records
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5">Persisted in distributed MySQL on TiDB Cloud Serverless (AWS Singapore)</p>
+            <p class="text-xs text-slate-400 mt-0.5">Persisted in TiDB Cloud Serverless database</p>
           </div>
-          
-          <button 
-            @click="loadOrders" 
-            :disabled="isLoadingHistory"
-            class="text-xs text-slate-300 hover:text-white px-3.5 py-2 rounded-xl border border-slate-700 hover:bg-slate-800 transition flex items-center gap-2 font-medium"
-          >
-            <i class="fa-solid fa-arrows-rotate" :class="{ 'fa-spin': isLoadingHistory }"></i>
-            <span>Refresh</span>
-          </button>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Search Input -->
+            <div class="relative">
+              <input 
+                type="text" 
+                v-model="historySearchQuery" 
+                placeholder="Search URL or ID..." 
+                class="bg-surface-900 border border-slate-700/80 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 w-44 sm:w-56"
+              />
+              <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-[10px]"></i>
+            </div>
+
+            <!-- Status Dropdown Filter -->
+            <select 
+              v-model="historyStatusFilter" 
+              class="bg-surface-900 border border-slate-700/80 rounded-xl px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
+            >
+              <option value="all">All Statuses</option>
+              <option value="Completed">Completed</option>
+              <option value="In progress">In Progress</option>
+            </select>
+
+            <!-- Refresh Button -->
+            <button 
+              @click="loadOrders" 
+              :disabled="isLoadingHistory"
+              class="p-2 rounded-xl border border-slate-700/80 bg-surface-900 hover:bg-surface-800 text-slate-300 transition"
+              title="Refresh Records"
+            >
+              <i class="fa-solid fa-arrows-rotate text-xs" :class="{ 'fa-spin': isLoadingHistory }"></i>
+            </button>
+          </div>
         </div>
 
+        <!-- Table View -->
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm text-slate-300">
-            <thead class="bg-surface-950 text-slate-400 text-[11px] uppercase tracking-wider font-semibold border-b border-slate-800">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-surface-900/80 text-slate-400 text-[10px] uppercase tracking-wider font-semibold border-b border-slate-800">
               <tr>
-                <th class="px-5 py-3.5">Order ID</th>
-                <th class="px-5 py-3.5">Target Reel / Post</th>
-                <th class="px-5 py-3.5 text-center">Delivered</th>
-                <th class="px-5 py-3.5 text-center">Status</th>
-                <th class="px-5 py-3.5">Timestamp</th>
+                <th class="px-4 py-3">Reference ID</th>
+                <th class="px-4 py-3">Target Asset URL</th>
+                <th class="px-4 py-3 text-center">Delivered</th>
+                <th class="px-4 py-3 text-center">Retention</th>
+                <th class="px-4 py-3 text-center">Status</th>
+                <th class="px-4 py-3">Timestamp</th>
+                <th class="px-4 py-3 text-right">Action</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-800/60 text-xs font-mono">
-              <tr v-if="pastOrders.length === 0">
-                <td colspan="5" class="px-5 py-8 text-center text-slate-500 font-sans">
-                  No campaign history found. Launch your first 50 views campaign above!
+            <tbody class="divide-y divide-slate-800/60 font-mono">
+              <tr v-if="filteredOrders.length === 0">
+                <td colspan="7" class="px-4 py-8 text-center text-slate-500 font-sans">
+                  No campaigns match the selected criteria.
                 </td>
               </tr>
-              <tr v-for="order in pastOrders" :key="order.id" class="hover:bg-surface-800/40 transition">
-                <td class="px-5 py-3 text-slate-400">
-                  <span :title="order.id">{{ order.id.substring(0, 8) }}...</span>
+              <tr v-for="order in filteredOrders" :key="order.id" class="hover:bg-surface-800/40 transition">
+                <td class="px-4 py-3 text-slate-400">
+                  <span :title="order.id" class="cursor-pointer hover:text-white" @click="copyToClipboard(order.id, 'Order ID')">
+                    {{ order.id.substring(0, 8) }}...
+                  </span>
                 </td>
-                <td class="px-5 py-3 text-slate-200 truncate max-w-xs font-sans">
-                  <a :href="order.target_url" target="_blank" class="hover:text-cyan-400 underline decoration-slate-700 flex items-center gap-1.5">
-                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                    <span class="truncate">{{ order.target_url }}</span>
-                  </a>
+                <td class="px-4 py-3 text-slate-200 truncate max-w-xs font-sans">
+                  <span class="truncate" :title="order.target_url">{{ order.target_url }}</span>
                 </td>
-                <td class="px-5 py-3 text-center font-bold text-white">
+                <td class="px-4 py-3 text-center font-bold text-white">
                   {{ order.delivered_count }} / {{ order.quantity }}
                 </td>
-                <td class="px-5 py-3 text-center">
-                  <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold border"
+                <td class="px-4 py-3 text-center text-slate-400">
+                  {{ order.interval_seconds || 20 }}s
+                </td>
+                <td class="px-4 py-3 text-center">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-semibold border"
                     :class="order.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'">
                     {{ order.status }}
                   </span>
                 </td>
-                <td class="px-5 py-3 text-slate-400 text-[11px]">
+                <td class="px-4 py-3 text-slate-400 text-[11px] font-sans">
                   {{ formatDate(order.created_at) }}
+                </td>
+                <td class="px-4 py-3 text-right font-sans">
+                  <a :href="order.target_url" target="_blank" class="text-cyan-400 hover:underline flex items-center justify-end gap-1 text-[11px]">
+                    <span>View</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                  </a>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+
+        <div class="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-800/60">
+          <span>Showing {{ filteredOrders.length }} of {{ pastOrders.length }} total campaigns</span>
+          <span>Synced with TiDB Cloud</span>
+        </div>
       </section>
 
     </main>
 
+    <!-- Distributed Edge Gateway Modal -->
+    <div v-if="showGatewayModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      <div class="relative w-full max-w-xl bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-5">
+        
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-surface-800 text-cyan-400 flex items-center justify-center border border-slate-700">
+              <i class="fa-solid fa-network-wired text-xs"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-white">Distributed Edge Gateway Settings</h3>
+              <p class="text-xs text-slate-400">Configure multi-region distribution and proxy routing</p>
+            </div>
+          </div>
+          <button @click="showGatewayModal = false" class="text-slate-400 hover:text-white p-1 rounded-lg transition">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+
+        <!-- Mode Selector -->
+        <div class="space-y-2">
+          <label class="text-xs font-semibold uppercase tracking-wider text-slate-300">Routing Mode</label>
+          <div class="grid grid-cols-3 gap-2.5 text-xs">
+            <button 
+              type="button" 
+              @click="updateProxyMode('auto')" 
+              class="p-3 rounded-xl border text-left transition"
+              :class="proxyMode === 'auto' ? 'bg-cyan-500/10 border-cyan-500 text-white' : 'bg-surface-850 border-slate-800 text-slate-400 hover:border-slate-700'"
+            >
+              <div class="font-bold text-white">Auto Edge Pool</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">{{ proxyStats.auto_proxies_count }} Live Endpoints</div>
+            </button>
+
+            <button 
+              type="button" 
+              @click="updateProxyMode('custom')" 
+              class="p-3 rounded-xl border text-left transition"
+              :class="proxyMode === 'custom' ? 'bg-cyan-500/10 border-cyan-500 text-white' : 'bg-surface-850 border-slate-800 text-slate-400 hover:border-slate-700'"
+            >
+              <div class="font-bold text-white">Custom Private</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">{{ proxyStats.custom_proxies_count }} User Endpoints</div>
+            </button>
+
+            <button 
+              type="button" 
+              @click="updateProxyMode('direct')" 
+              class="p-3 rounded-xl border text-left transition"
+              :class="proxyMode === 'direct' ? 'bg-cyan-500/10 border-cyan-500 text-white' : 'bg-surface-850 border-slate-800 text-slate-400 hover:border-slate-700'"
+            >
+              <div class="font-bold text-white">Direct Route</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Local Network</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Proxies Input -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-semibold uppercase tracking-wider text-slate-300">Import Dedicated Endpoints</label>
+            <span class="text-[10px] text-slate-500">Format: <code>ip:port</code> or <code>ip:port:user:pass</code></span>
+          </div>
+          <textarea 
+            v-model="customProxiesText" 
+            rows="3" 
+            placeholder="142.93.12.89:8080&#10;167.99.54.21:3128:user:pass"
+            class="w-full bg-surface-950 border border-slate-700/80 rounded-xl p-2.5 text-xs font-mono text-white focus:outline-none focus:border-cyan-500 resize-none"
+          ></textarea>
+          <div class="flex items-center justify-between pt-1">
+            <button 
+              type="button" 
+              @click="importCustomProxies" 
+              :disabled="isImportingProxies" 
+              class="px-3.5 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition flex items-center gap-2"
+            >
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <span>Save & Activate</span>
+            </button>
+            <button 
+              type="button" 
+              @click="refreshPublicProxies" 
+              :disabled="isRefreshingProxies || proxyStats.is_fetching" 
+              class="px-3.5 py-1.5 rounded-lg bg-surface-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-medium transition flex items-center gap-1.5"
+            >
+              <i class="fa-solid fa-arrows-rotate" :class="{ 'fa-spin': isRefreshingProxies || proxyStats.is_fetching }"></i>
+              <span>Refresh Public Pool</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Active Endpoints Preview -->
+        <div v-if="proxyStats.sample_proxies && proxyStats.sample_proxies.length > 0" class="pt-2 border-t border-slate-800 space-y-1.5">
+          <div class="text-[11px] text-slate-400 font-medium">Sample Verified Endpoints:</div>
+          <div class="flex flex-wrap gap-1.5">
+            <span v-for="p in proxyStats.sample_proxies" :key="p" class="px-2 py-0.5 rounded bg-surface-950 border border-slate-800 text-slate-300 font-mono text-[10px]">
+              {{ p }}
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- Notification Toast -->
     <div 
       v-if="toast.show" 
-      class="fixed bottom-6 right-6 px-5 py-3.5 rounded-2xl shadow-2xl text-sm font-medium z-50 flex items-center gap-3 transition-all duration-300 border backdrop-blur-xl"
-      :class="toast.isError ? 'bg-rose-600/90 text-white border-rose-500' : 'bg-cyan-600/90 text-white border-cyan-400'"
+      class="fixed bottom-6 right-6 px-4 py-3 rounded-xl shadow-2xl text-xs font-medium z-50 flex items-center gap-2.5 border backdrop-blur-md transition"
+      :class="toast.isError ? 'bg-rose-950/90 text-rose-200 border-rose-800' : 'bg-surface-850/95 text-white border-slate-700'"
     >
-      <i :class="toast.isError ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-circle-check'" class="text-lg"></i>
+      <i :class="toast.isError ? 'fa-solid fa-triangle-exclamation text-rose-400' : 'fa-solid fa-circle-check text-cyan-400'" class="text-sm"></i>
       <span>{{ toast.message }}</span>
     </div>
 
   </div>
 
-  <!-- VUE 3 APPLICATION LOGIC SCRIPT -->
+  <!-- VUE 3 CONTROLLER SCRIPT -->
   <script src="/static/dashboard.js"></script>
 </body>
 </html>

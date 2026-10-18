@@ -11,6 +11,7 @@ from app.models.order import Order
 from app.models.service import Service
 from app.models.task_log import TaskLog
 from app.services.device_pool import get_device_pool_size
+from app.services.proxy_manager import proxy_manager
 from app.services.view_booster import manager, run_campaign_in_thread, run_view_booster_campaign
 
 router = APIRouter(prefix="/view-booster", tags=["Facebook Views & Reach Booster"])
@@ -21,6 +22,14 @@ class LaunchViewBoostRequest(BaseModel):
     quantity: int = Field(default=50, ge=1, le=500, description="Total views & impressions to deliver (1-500)")
     dwell_seconds: float = Field(default=15.0, ge=3.0, le=60.0, description="Dwell retention time per view in seconds (up to 60s)")
     concurrency: int = Field(default=4, ge=1, le=10, description="Number of parallel Playwright browser workers")
+
+
+class ProxyImportRequest(BaseModel):
+    proxies_text: str = Field(..., description="Newline separated proxies in format ip:port, ip:port:user:pass, or user:pass@ip:port")
+
+
+class ProxyModeRequest(BaseModel):
+    mode: str = Field(..., example="auto", description="Proxy mode: 'auto', 'custom', or 'direct'")
 
 
 async def _run_background_view_campaign(task_id: str, order_id: str, post_url: str, quantity: int, dwell_seconds: float, concurrency: int):
@@ -47,13 +56,17 @@ async def _run_background_view_campaign(task_id: str, order_id: str, post_url: s
 
                 # Save individual task logs
                 for log in result.get("logs", []):
+                    proxy_info = log.get("proxy", "Direct")
+                    wifi_info = log.get("wifi_ip", "N/A")
+                    mac_info = log.get("wifi_mac", "N/A")
+                    gpu_info = log.get("webgl_gpu", "N/A")
                     task_log = TaskLog(
                         order_id=order.id,
                         persona_id=None,
                         action_type="view",
                         status="SUCCESS" if log["status"] == "SUCCESS" else "FAILED",
                         execution_time_ms=int(log.get("dwell_seconds", 0) * 1000),
-                        details=f"{log.get('device')} ({log.get('viewport')}) | Ref: {log.get('referrer')} | {log.get('message')}"
+                        details=f"{log.get('device')} ({log.get('viewport')}) | IP: {proxy_info} | WiFi: {wifi_info} | MAC: {mac_info} | GPU: {gpu_info} | {log.get('message')}"
                     )
                     db.add(task_log)
 
@@ -107,6 +120,8 @@ async def launch_view_boost(payload: LaunchViewBoostRequest, db: AsyncSession = 
         "quantity": payload.quantity,
         "dwell_seconds": payload.dwell_seconds,
         "concurrency": payload.concurrency,
+        "proxy_mode": proxy_manager.mode,
+        "active_proxies": len(proxy_manager.custom_proxies) if proxy_manager.mode == "custom" else len(proxy_manager.auto_proxies),
         "message": f"Real View & Reach Booster launched with {payload.concurrency} parallel browser workers!"
     }
 
@@ -137,3 +152,41 @@ async def get_device_pool_info():
         "max_dwell_seconds": 60.0
     }
 
+
+@router.get("/proxy-stats")
+async def get_proxy_stats():
+    """Get live rotating proxy pool statistics."""
+    return proxy_manager.get_stats()
+
+
+@router.post("/proxy-refresh")
+async def refresh_public_proxies():
+    """Fetch and validate fresh public proxies in background."""
+    asyncio.create_task(proxy_manager.refresh_public_proxies(max_check=60))
+    return {
+        "success": True,
+        "message": "Public proxy validation started in background",
+        "stats": proxy_manager.get_stats()
+    }
+
+
+@router.post("/proxy-mode")
+async def set_proxy_mode(payload: ProxyModeRequest):
+    """Set proxy mode: 'auto' (rotating public), 'custom' (user proxies), or 'direct'."""
+    proxy_manager.set_mode(payload.mode)
+    return {
+        "success": True,
+        "mode": proxy_manager.mode,
+        "stats": proxy_manager.get_stats()
+    }
+
+
+@router.post("/proxy-import")
+async def import_custom_proxies(payload: ProxyImportRequest):
+    """Import user custom proxies."""
+    count = proxy_manager.import_custom_proxies(payload.proxies_text)
+    return {
+        "success": True,
+        "imported_count": count,
+        "stats": proxy_manager.get_stats()
+    }
