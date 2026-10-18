@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bot Buddy - Dummy Social Engagement Dashboard</title>
+  <!-- Tailwind CSS CDN with dark mode support -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            surface: {
+              800: '#1e293b',
+              900: '#0f172a',
+              950: '#020617'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Font Awesome / Lucide icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .animate-pulse-slow {
+      animation: pulse-slow 3s infinite ease-in-out;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  </style>
+</head>
+<body class="bg-surface-950 text-slate-100 min-h-screen font-sans antialiased flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="bg-surface-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+        <i class="fa-solid fa-robot text-white text-lg"></i>
+      </div>
+      <div>
+        <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">Bot Buddy</span>
+        <span class="text-xs ml-2 px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 font-medium border border-indigo-500/20">Simulation Engine v1.0</span>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex items-center space-x-2 bg-surface-800/80 p-1 rounded-xl border border-slate-700/60 text-sm">
+      <button onclick="switchTab('orders')" id="tab-orders" class="px-4 py-1.5 rounded-lg font-medium transition-all bg-indigo-600 text-white shadow-sm flex items-center gap-2">
+        <i class="fa-solid fa-bolt"></i> Simulations
+      </button>
+      <button onclick="switchTab('personas')" id="tab-personas" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
+        <i class="fa-solid fa-users"></i> Personas (<span id="nav-persona-count">0</span>)
+      </button>
+      <button onclick="switchTab('smm')" id="tab-smm" class="px-4 py-1.5 rounded-lg font-medium transition-all text-slate-400 hover:text-white flex items-center gap-2">
+        <i class="fa-solid fa-code"></i> SMM API v2
+      </button>
+    </div>
+
+    <!-- Links -->
+    <div class="flex items-center space-x-3 text-sm">
+      <a href="/docs" target="_blank" class="text-slate-400 hover:text-indigo-400 transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-surface-900">
+        <i class="fa-solid fa-book"></i> Swagger Docs
+      </a>
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Engine Online
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+
+    <!-- Top KPI Metric Cards -->
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
+        <div class="flex items-center justify-between">
+          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Total Orders</span>
+          <span class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center"><i class="fa-solid fa-layer-group"></i></span>
+        </div>
+        <div class="text-3xl font-bold mt-2" id="kpi-total-orders">0</div>
+        <div class="text-xs text-slate-500 mt-1">All time engagement orders</div>
+      </div>
+
+      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
+        <div class="flex items-center justify-between">
+          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Active In-Progress</span>
+          <span class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+        </div>
+        <div class="text-3xl font-bold mt-2 text-amber-400" id="kpi-in-progress">0</div>
+        <div class="text-xs text-slate-500 mt-1">Live drip-feed running</div>
+      </div>
+
+      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
+        <div class="flex items-center justify-between">
+          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Completed</span>
+          <span class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-check"></i></span>
+        </div>
+        <div class="text-3xl font-bold mt-2 text-emerald-400" id="kpi-completed">0</div>
+        <div class="text-xs text-slate-500 mt-1">Successfully fulfilled</div>
+      </div>
+
+      <div class="bg-surface-900 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
+        <div class="flex items-center justify-between">
+          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Dummy Personas</span>
+          <span class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center"><i class="fa-solid fa-users"></i></span>
+        </div>
+        <div class="text-3xl font-bold mt-2 text-purple-400" id="kpi-personas">0</div>
+        <div class="text-xs text-slate-500 mt-1">Available active accounts</div>
+      </div>
+    </section>
+
+    <!-- TAB 1: ORDERS & SIMULATIONS -->
+    <div id="section-orders" class="space-y-6">
+      
+      <!-- New Order Creation Panel -->
+      <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
+        <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-800">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-plus-circle text-indigo-400"></i> New Engagement Simulation
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">Simulate fake followers, likes, comments, or views with stochastic pacing</p>
+          </div>
+          <button onclick="refreshOrders()" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-800 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+          </button>
+        </div>
+
+        <form id="order-form" onsubmit="handleCreateOrder(event)" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            <!-- Service Selection -->
+            <div>
+              <label class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Select Service</label>
+              <select id="order-service" onchange="onServiceChange()" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition" required>
+                <!-- Populated via JS -->
+              </select>
+            </div>
+
+            <!-- Target URL -->
+            <div>
+              <label class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Target Post / Page URL</label>
+              <input type="url" id="order-target" placeholder="https://facebook.com/watch/?v=12345" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition" required>
+            </div>
+
+            <!-- Quantity -->
+            <div>
+              <label class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Quantity</label>
+              <input type="number" id="order-quantity" value="25" min="5" max="50000" class="w-full bg-surface-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition" required>
+            </div>
+          </div>
+
+          <!-- Pacing & Drip Options -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+            
+            <!-- Drip Feed Toggle -->
+            <div class="bg-surface-800/60 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
+              <div>
+                <span class="text-sm font-medium text-white block">Drip-Feed Pacing</span>
+                <span class="text-xs text-slate-400">Gaussian human delay between actions</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="order-drip" class="sr-only peer" checked onchange="toggleIntervalInput()">
+                <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+              </label>
+            </div>
+
+            <!-- Interval seconds -->
+            <div id="interval-container" class="bg-surface-800/60 border border-slate-800 rounded-xl p-3">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-semibold text-slate-300">Interval Speed:</span>
+                <span class="text-xs font-bold text-indigo-400" id="interval-val-label">3 seconds</span>
+              </div>
+              <input type="range" id="order-interval" min="1" max="30" value="3" oninput="document.getElementById('interval-val-label').innerText = this.value + ' seconds'" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+            </div>
+
+            <!-- Action Button -->
+            <div class="flex items-end">
+              <button type="submit" id="btn-submit-order" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-medium py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-play"></i> Launch Simulation
+              </button>
+            </div>
+          </div>
+
+          <!-- Spintax / Comments section (Conditional) -->
+          <div id="comments-box" class="hidden pt-2">
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-xs font-semibold uppercase text-slate-400">Custom Comments / Spintax (1 per line or {spintax})</label>
+              <div class="flex gap-2">
+                <button type="button" onclick="insertSpintaxPreset(1)" class="text-xs text-indigo-400 hover:text-indigo-300 px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20">Preset: Positive</button>
+                <button type="button" onclick="insertSpintaxPreset(2)" class="text-xs text-purple-400 hover:text-purple-300 px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20">Preset: Engaging</button>
+              </div>
+            </div>
+            <textarea id="order-comments" rows="3" placeholder="{Great|Awesome|Incredible} post! {Loved this|Keep it up} 🔥" class="w-full bg-surface-800 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition font-mono"></textarea>
+          </div>
+        </form>
+      </section>
+
+      <!-- Active Orders Table -->
+      <section class="bg-surface-900 border border-slate-800 rounded-2xl shadow-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-slate-400"></i> Active & Recent Orders
+          </h2>
+          <span class="text-xs text-slate-500" id="polling-indicator"><i class="fa-solid fa-rotate text-indigo-400 animate-spin mr-1"></i> Live Auto-refreshing (2s)</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-300">
+            <thead class="bg-surface-800/80 text-xs uppercase font-semibold text-slate-400 tracking-wider">
+              <tr>
+                <th class="px-6 py-3.5">Order ID</th>
+                <th class="px-6 py-3.5">Service</th>
+                <th class="px-6 py-3.5">Target</th>
+                <th class="px-6 py-3.5 w-48">Progress</th>
+                <th class="px-6 py-3.5">Status</th>
+                <th class="px-6 py-3.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body" class="divide-y divide-slate-800">
+              <tr>
+                <td colspan="6" class="px-6 py-8 text-center text-slate-500">
+                  <i class="fa-solid fa-spinner fa-spin text-xl mb-2 block"></i> Loading orders...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 2: PERSONA GENERATOR & POOL -->
+    <div id="section-personas" class="hidden space-y-6">
+      
+      <!-- Generator Bar -->
+      <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-user-plus text-purple-400"></i> Dummy Persona Generator
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">Instantly generate authentic profiles with localized avatars, handles, and realistic biographies.</p>
+          </div>
+
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <select id="persona-locale" class="bg-surface-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500">
+              <option value="en_US">🇺🇸 United States (en_US)</option>
+              <option value="bn_BD">🇧🇩 Bangladesh (bn_BD)</option>
+              <option value="en_GB">🇬🇧 United Kingdom (en_GB)</option>
+            </select>
+
+            <select id="persona-count" class="bg-surface-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500">
+              <option value="5">5 Personas</option>
+              <option value="10" selected>10 Personas</option>
+              <option value="25">25 Personas</option>
+              <option value="50">50 Personas</option>
+            </select>
+
+            <button onclick="handleGeneratePersonas()" id="btn-generate-personas" class="bg-purple-600 hover:bg-purple-500 text-white font-medium px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 whitespace-nowrap shadow-md shadow-purple-600/30">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Generate
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Personas Grid -->
+      <section>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-bold text-white text-base">Active Account Pool</h3>
+          <span class="text-xs text-slate-400">Auto-rotated during simulations</span>
+        </div>
+        <div id="personas-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 3: SMM API V2 TESTER -->
+    <div id="section-smm" class="hidden space-y-6">
+      <section class="bg-surface-900 border border-slate-800 rounded-2xl p-6 shadow-md">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2 mb-1">
+          <i class="fa-solid fa-code text-indigo-400"></i> Standard SMM API v2 Quick Tester
+        </h2>
+        <p class="text-xs text-slate-400 mb-6">Test the industry standard SMM endpoint (`/api/v2`) directly from here with real POST/GET parameters.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <button onclick="testSMM('services')" class="bg-surface-800 hover:bg-slate-700 border border-slate-700 rounded-xl p-4 text-left transition group">
+            <div class="text-xs font-bold uppercase text-indigo-400 mb-1">Action: services</div>
+            <div class="text-sm font-semibold text-white">List All Services</div>
+            <div class="text-xs text-slate-500 mt-1">Returns array of dummy services</div>
+          </button>
+
+          <button onclick="testSMM('balance')" class="bg-surface-800 hover:bg-slate-700 border border-slate-700 rounded-xl p-4 text-left transition group">
+            <div class="text-xs font-bold uppercase text-emerald-400 mb-1">Action: balance</div>
+            <div class="text-sm font-semibold text-white">Check Mock Balance</div>
+            <div class="text-xs text-slate-500 mt-1">Returns current balance & currency</div>
+          </button>
+
+          <button onclick="testSMM('add_sample')" class="bg-surface-800 hover:bg-slate-700 border border-slate-700 rounded-xl p-4 text-left transition group">
+            <div class="text-xs font-bold uppercase text-amber-400 mb-1">Action: add</div>
+            <div class="text-sm font-semibold text-white">Place Sample Order</div>
+            <div class="text-xs text-slate-500 mt-1">10 Facebook Likes simulation</div>
+          </button>
+
+          <button onclick="testSMM('status_sample')" class="bg-surface-800 hover:bg-slate-700 border border-slate-700 rounded-xl p-4 text-left transition group">
+            <div class="text-xs font-bold uppercase text-purple-400 mb-1">Action: status</div>
+            <div class="text-sm font-semibold text-white">Query Status</div>
+            <div class="text-xs text-slate-500 mt-1">Check progress & remains</div>
+          </button>
+        </div>
+
+        <!-- Output response -->
+        <div class="bg-surface-950 border border-slate-800 rounded-xl p-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono text-slate-400 uppercase">Live Response Output</span>
+            <span class="text-xs text-slate-500" id="smm-time"></span>
+          </div>
+          <pre id="smm-response" class="font-mono text-xs text-emerald-400 overflow-x-auto p-2 bg-black/40 rounded-lg max-h-80">Click any action card above to test the API...</pre>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- LOGS MODAL -->
+  <div id="logs-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-white text-base flex items-center gap-2">
+            <i class="fa-solid fa-terminal text-indigo-400"></i> Simulation Audit Logs
+          </h3>
+          <span class="text-xs text-slate-400 font-mono" id="modal-order-id">Order ID: ...</span>
+        </div>
+        <button onclick="closeLogsModal()" class="text-slate-400 hover:text-white p-2">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-2 flex-1 font-mono text-xs" id="modal-logs-body">
+        <!-- Log items -->
+      </div>
+      
+      <div class="px-6 py-3 bg-surface-950 border-t border-slate-800 text-right">
+        <button onclick="closeLogsModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-indigo-600 text-white px-4 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 text-sm flex items-center gap-2">
+    <i class="fa-solid fa-circle-check text-base"></i> <span id="toast-msg">Notification</span>
+  </div>
+
+  <script src="/static/dashboard.js"></script>
+</body>
+</html>

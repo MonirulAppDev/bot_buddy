@@ -1,6 +1,9 @@
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.api.smm_v2 import router as smm_v2_router
 from app.api.v1.orders import router as orders_router
@@ -33,6 +36,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount Static Files
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
 # Mount Routers
 app.include_router(services_router, prefix=settings.API_V1_STR)
 app.include_router(personas_router, prefix=settings.API_V1_STR)
@@ -40,16 +48,20 @@ app.include_router(orders_router, prefix=settings.API_V1_STR)
 app.include_router(smm_v2_router)
 
 
-@app.get("/", tags=["Root"])
+@app.get("/", tags=["Dashboard"], include_in_schema=False)
 async def root():
-    return {
-        "name": settings.PROJECT_NAME,
-        "status": "online",
-        "docs_url": "/docs",
-        "smm_api_v2_url": "/api/v2"
-    }
+    return RedirectResponse(url="/dashboard")
+
+
+@app.get("/dashboard", tags=["Dashboard"], include_in_schema=False)
+async def dashboard_page():
+    index_file = os.path.join(static_dir, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
+    return {"message": "Dashboard index.html not found"}
 
 
 @app.get("/health", tags=["Health"])
 async def health_check():
     return {"status": "healthy"}
+
