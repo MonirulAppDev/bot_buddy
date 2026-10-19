@@ -3,6 +3,7 @@ import concurrent.futures
 import logging
 import random
 import re
+import socket
 import ssl
 import time
 import urllib.request
@@ -10,15 +11,21 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger("proxy_manager")
 
-PUBLIC_SOURCES = [
+SOCKS5_SOURCES = [
+    "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks5.txt",
+    "https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt",
+    "https://raw.githubusercontent.com/proxifly/free-proxy-list/main/proxies/protocols/socks5/data.txt",
+]
+
+HTTP_SOURCES = [
+    "https://raw.githubusercontent.com/proxifly/free-proxy-list/main/proxies/protocols/http/data.txt",
     "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/http.txt",
-    "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt",
     "https://raw.githubusercontent.com/roosterkid/openproxylist/main/HTTPS_RAW.txt",
 ]
 
 
 class ProxyManager:
-    """Manages high-speed rotating HTTP/HTTPS proxy pool with live health checking and custom lists."""
+    """Manages high-speed rotating SOCKS5 and HTTP/HTTPS proxy pool with live health checking and custom lists."""
 
     def __init__(self):
         self.auto_proxies: List[Dict[str, Any]] = []
@@ -48,31 +55,31 @@ class ProxyManager:
         lines = [l.strip() for l in raw_text.splitlines() if l.strip()]
         imported = []
         for line in lines:
-            if "@" in line:
-                auth, server = line.split("@", 1)
+            proto = "socks5" if "socks5://" in line else "http"
+            clean = line.replace("socks5://", "").replace("http://", "").replace("https://", "").strip()
+            if "@" in clean:
+                auth, server = clean.split("@", 1)
                 user, pwd = auth.split(":", 1)
-                clean_srv = server.strip().replace("http://", "").replace("https://", "")
                 imported.append({
-                    "server": f"http://{clean_srv}",
+                    "server": f"{proto}://{server.strip()}",
                     "username": user.strip(),
                     "password": pwd.strip(),
-                    "display": clean_srv
+                    "display": server.strip()
                 })
-            elif line.count(":") == 3:
-                parts = line.split(":")
+            elif clean.count(":") == 3:
+                parts = clean.split(":")
                 imported.append({
-                    "server": f"http://{parts[0].strip()}:{parts[1].strip()}",
+                    "server": f"{proto}://{parts[0].strip()}:{parts[1].strip()}",
                     "username": parts[2].strip(),
                     "password": parts[3].strip(),
                     "display": f"{parts[0].strip()}:{parts[1].strip()}"
                 })
-            elif ":" in line:
-                clean_line = line.strip().replace("http://", "").replace("https://", "")
+            elif ":" in clean:
                 imported.append({
-                    "server": f"http://{clean_line}",
+                    "server": f"{proto}://{clean}",
                     "username": None,
                     "password": None,
-                    "display": clean_line
+                    "display": clean
                 })
         self.custom_proxies = imported
         if imported:
@@ -80,8 +87,8 @@ class ProxyManager:
         logger.info(f"Imported {len(imported)} custom proxies. Switched mode to '{self.mode}'.")
         return len(imported)
 
-    async def refresh_public_proxies(self, max_check: int = 300) -> int:
-        """Fetch fresh public proxy lists and asynchronously validate live ones using high concurrency."""
+    async def refresh_public_proxies(self, max_check: int = 500) -> int:
+        """Fetch fresh public SOCKS5 and HTTP proxy lists and asynchronously validate live ones using high concurrency."""
         if self.is_fetching:
             return len(self.auto_proxies)
 
@@ -89,53 +96,75 @@ class ProxyManager:
         loop = asyncio.get_running_loop()
 
         def _worker_fetch_and_check() -> List[Dict[str, Any]]:
-            raw_candidates = []
+            ordered_candidates = []
+            seen = set()
             ctx = ssl._create_unverified_context()
-            for source in PUBLIC_SOURCES:
+            for source in SOCKS5_SOURCES:
                 try:
                     req = urllib.request.Request(source, headers={"User-Agent": "Mozilla/5.0"})
                     with urllib.request.urlopen(req, timeout=4, context=ctx) as resp:
                         lines = [l.strip() for l in resp.read().decode("utf-8", errors="ignore").splitlines() if l.strip() and ":" in l]
-                        raw_candidates.extend(lines)
+                        for line in lines:
+                            if line not in seen:
+                                seen.add(line)
+                                ordered_candidates.append(line)
                 except Exception as e:
                     logger.warning(f"Failed fetching proxies from {source}: {e}")
 
-            raw_candidates = list(set(raw_candidates))
-            random.shuffle(raw_candidates)
-            candidates = raw_candidates[:max_check]
+            candidates = ordered_candidates[:max_check]
 
-            with concurrent.futures.ThreadPoolExecutor(max_workers=75) as executor:
-                results = list(executor.map(self._test_single_proxy, candidates))
+            with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
+                results = list(executor.map(self._test_socks5_proxy, candidates))
 
-            return [r for r in results if r is not None]
+            valid = [r for r in results if r is not None]
+            # Shuffle verified proxies so sequential requests distribute across various geolocations
+            random.shuffle(valid)
+            return valid
 
         try:
             valid_proxies = await loop.run_in_executor(None, _worker_fetch_and_check)
             if valid_proxies:
                 self.auto_proxies = valid_proxies
                 self.last_fetched = time.time()
-                logger.info(f"Verified {len(valid_proxies)} live public proxies for rotating pool.")
+                logger.info(f"Verified {len(valid_proxies)} live public SOCKS5 proxies for rotating pool.")
             return len(self.auto_proxies)
         finally:
             self.is_fetching = False
 
-    def _test_single_proxy(self, proxy_str: str) -> Optional[Dict[str, Any]]:
-        t0 = time.time()
-        clean = proxy_str.replace("http://", "").replace("https://", "").strip()
+    def _test_socks5_proxy(self, proxy_str: str) -> Optional[Dict[str, Any]]:
+        clean = proxy_str.replace("socks5://", "").replace("http://", "").strip()
+        parts = clean.split(":")
+        if len(parts) != 2:
+            return None
+        ip, port_str = parts[0], parts[1]
         try:
-            handler = urllib.request.ProxyHandler({"http": f"http://{clean}", "https": f"http://{clean}"})
-            opener = urllib.request.build_opener(handler)
-            req = urllib.request.Request("http://httpbin.org/ip", headers={"User-Agent": "Mozilla/5.0"})
-            with opener.open(req, timeout=2.5) as resp:
-                if resp.status == 200:
+            port = int(port_str)
+        except ValueError:
+            return None
+
+        t0 = time.time()
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(2.5)
+            s.connect((ip, port))
+            # SOCKS5 greeting: version 5, 1 auth method, no auth
+            s.sendall(b"\x05\x01\x00")
+            res = s.recv(2)
+            if res == b"\x05\x00":
+                # SOCKS5 connect request to 1.1.1.1:80
+                s.sendall(b"\x05\x01\x00\x01\x01\x01\x01\x01\x00\x50")
+                conn_res = s.recv(10)
+                if conn_res and conn_res[1] == 0:
                     latency = round((time.time() - t0) * 1000)
+                    s.close()
                     return {
-                        "server": f"http://{clean}",
+                        "server": f"socks5://{ip}:{port}",
                         "username": None,
                         "password": None,
-                        "display": clean,
+                        "display": f"{ip}:{port} (SOCKS5)",
                         "latency_ms": latency
                     }
+            s.close()
         except Exception:
             pass
         return None

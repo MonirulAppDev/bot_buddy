@@ -61,7 +61,7 @@ async def execute_single_view(
         proxy_cfg = proxy_manager.get_proxy_for_view(view_idx)
         proxy_display = proxy_cfg["display"] if proxy_cfg else "Direct (Stealth)"
 
-        async def _attempt(use_proxy: bool) -> Dict[str, Any]:
+        async def _attempt(chosen_proxy: Optional[Dict[str, Any]]) -> Dict[str, Any]:
             context_kwargs: Dict[str, Any] = {
                 "user_agent": device_profile["user_agent"],
                 "viewport": device_profile["viewport"],
@@ -69,17 +69,18 @@ async def execute_single_view(
                 "is_mobile": device_profile.get("is_mobile", True),
                 "has_touch": device_profile.get("has_touch", True),
                 "locale": "en-US",
+                "ignore_https_errors": True,
                 "extra_http_headers": extra_headers
             }
-            if use_proxy and proxy_cfg:
-                p_arg: Dict[str, str] = {"server": proxy_cfg["server"]}
-                if proxy_cfg.get("username"):
-                    p_arg["username"] = proxy_cfg["username"]
-                if proxy_cfg.get("password"):
-                    p_arg["password"] = proxy_cfg["password"]
+            if chosen_proxy:
+                p_arg: Dict[str, str] = {"server": chosen_proxy["server"]}
+                if chosen_proxy.get("username"):
+                    p_arg["username"] = chosen_proxy["username"]
+                if chosen_proxy.get("password"):
+                    p_arg["password"] = chosen_proxy["password"]
                 context_kwargs["proxy"] = p_arg
 
-            current_ip = proxy_display if use_proxy else "Direct (Stealth)"
+            current_ip = chosen_proxy["display"] if chosen_proxy else "Direct (Stealth)"
             context = await browser.new_context(**context_kwargs)
             page = await context.new_page()
 
@@ -186,37 +187,43 @@ async def execute_single_view(
             finally:
                 await context.close()
 
-        # Try with assigned rotating proxy; if network error, fallback to direct stealth so view is never lost
-        try:
-            return await _attempt(use_proxy=bool(proxy_cfg))
-        except Exception as e:
-            if proxy_cfg:
-                logger.warning(f"[View #{view_idx}] Proxy {proxy_display} error: {e}. Falling back to direct stealth connection...")
+        # Handle execution with retry on proxy pool; never expose home IP if rotating proxy mode is active
+        if proxy_manager.mode != "direct" and proxy_cfg:
+            last_err = None
+            for retry_offset in [0, 3, 7]:
+                candidate_proxy = proxy_manager.get_proxy_for_view(view_idx + retry_offset) or proxy_cfg
                 try:
-                    return await _attempt(use_proxy=False)
-                except Exception as ex2:
-                    logger.error(f"[View #{view_idx}] Impression failed: {ex2}")
-                    return {
-                        "view_idx": view_idx,
-                        "device": device_profile["name"],
-                        "platform": device_profile.get("platform", "Mobile"),
-                        "viewport": f"{device_profile['viewport']['width']}x{device_profile['viewport']['height']}",
-                        "proxy": f"{proxy_display} (Failed)",
-                        "wifi_ip": wifi_profile["local_ipv4"],
-                        "wifi_mac": wifi_profile["mac_address"],
-                        "wifi_ssid": wifi_profile["ssid"],
-                        "webgl_gpu": device_profile.get("webgl_renderer", "Generic GPU"),
-                        "cores_ram": f"{device_profile.get('hardware_concurrency', 8)}C / {device_profile.get('device_memory', 8)}GB",
-                        "referrer": "N/A",
-                        "dwell_seconds": 0,
-                        "is_video": False,
-                        "video_streamed_sec": 0,
-                        "status": "FAILED",
-                        "message": str(ex2)[:100],
-                        "timestamp": datetime.datetime.now().strftime("%H:%M:%S")
-                    }
-            else:
-                logger.warning(f"[View #{view_idx}] Impression failed: {e}")
+                    return await _attempt(candidate_proxy)
+                except Exception as ex:
+                    last_err = ex
+                    logger.warning(f"[View #{view_idx}] Proxy {candidate_proxy['display']} attempt failed: {ex}. Retrying next proxy...")
+
+            logger.error(f"[View #{view_idx}] All proxy retries failed: {last_err}")
+            return {
+                "view_idx": view_idx,
+                "device": device_profile["name"],
+                "platform": device_profile.get("platform", "Mobile"),
+                "viewport": f"{device_profile['viewport']['width']}x{device_profile['viewport']['height']}",
+                "proxy": f"{proxy_display} (Failed)",
+                "wifi_ip": wifi_profile["local_ipv4"],
+                "wifi_mac": wifi_profile["mac_address"],
+                "wifi_ssid": wifi_profile["ssid"],
+                "webgl_gpu": device_profile.get("webgl_renderer", "Generic GPU"),
+                "cores_ram": f"{device_profile.get('hardware_concurrency', 8)}C / {device_profile.get('device_memory', 8)}GB",
+                "referrer": "N/A",
+                "dwell_seconds": 0,
+                "is_video": False,
+                "video_streamed_sec": 0,
+                "status": "FAILED",
+                "message": f"Proxy handshake failed: {str(last_err)[:70]}",
+                "timestamp": datetime.datetime.now().strftime("%H:%M:%S")
+            }
+        else:
+            # Direct connection mode
+            try:
+                return await _attempt(None)
+            except Exception as e:
+                logger.error(f"[View #{view_idx}] Direct impression failed: {e}")
                 return {
                     "view_idx": view_idx,
                     "device": device_profile["name"],
@@ -269,10 +276,10 @@ async def run_view_booster_campaign(
     device_batch = get_unique_device_batch(quantity)
 
     # Ensure proxy pool is primed if auto mode is on and auto_proxies is empty
-    if proxy_manager.mode == "auto" and len(proxy_manager.auto_proxies) < 15:
-        logger.info("Initializing public rotating proxy pool before campaign launch...")
+    if proxy_manager.mode == "auto" and len(proxy_manager.auto_proxies) < max(quantity, 25):
+        logger.info("Initializing public rotating SOCKS5 proxy pool before campaign launch...")
         try:
-            await proxy_manager.refresh_public_proxies(max_check=300)
+            await proxy_manager.refresh_public_proxies(max_check=600)
             task_record["active_proxies"] = len(proxy_manager.auto_proxies)
         except Exception as e:
             logger.warning(f"Could not prime proxy pool: {e}")

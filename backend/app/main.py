@@ -1,4 +1,13 @@
 import os
+import sys
+import asyncio
+
+if sys.platform == "win32":
+    try:
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    except Exception:
+        pass
+
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,6 +30,9 @@ from app.database import init_db
 async def lifespan(app: FastAPI):
     # Initialize database tables on startup
     await init_db()
+    # Automatically start background validation of public proxy pool
+    from app.services.proxy_manager import proxy_manager
+    asyncio.create_task(proxy_manager.refresh_public_proxies(max_check=300))
     yield
 
 
